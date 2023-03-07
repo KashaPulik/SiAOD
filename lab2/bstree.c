@@ -13,40 +13,35 @@ struct bstree *bstree_create(char *key, int value)
     return node;
 }
 
-void bstree_add(bstree *tree, char *key, int value)
+void bstree_add(bstree* tree, char* key, int value)
 {
-    bstree *parent = NULL;
-    while(tree) {
+    bstree* parent = NULL;
+    while (tree) {
         parent = tree;
-        if(strcmp(key, tree->key) < 0) {
+        if (strcmp(key, tree->key) < 0) {
             tree = tree->left;
-        }
-        else if (strcmp(key, tree->key) > 0) {
+        } else if (strcmp(key, tree->key) > 0) {
             tree = tree->right;
-        }
-        else {
+        } else {
             return;
         }
     }
-    bstree *node = bstree_create(key, value);
-    if(strcmp(key, parent->key) < 0) {
+    bstree* node = bstree_create(key, value);
+    if (strcmp(key, parent->key) < 0) {
         parent->left = node;
-    }
-    else {
+    } else {
         parent->right = node;
     }
 }
 
-struct bstree *bstree_lookup(bstree *tree, char *key)
+struct bstree* bstree_lookup(bstree* tree, char* key)
 {
-    while(tree) {
-        if(strcmp(key, tree->key) < 0) {
+    while (tree) {
+        if (strcmp(key, tree->key) < 0) {
             tree = tree->left;
-        }
-        else if(strcmp(key, tree->key) > 0) {
+        } else if (strcmp(key, tree->key) > 0) {
             tree = tree->right;
-        }
-        else {
+        } else {
             return tree;
         }
     }
@@ -55,84 +50,79 @@ struct bstree *bstree_lookup(bstree *tree, char *key)
 
 void bstree_replace_node(bstree *parent, bstree *node, bstree *child)
 {
-    if(parent) {
-        if(strcmp(node->key, parent->key) < 0) {
+    if (parent) {
+        if (strcmp(node->key, parent->key) < 0) {
             parent->left = child;
-        }
-        else {
+        } else {
             parent->right = child;
         }
     }
 }
 
-struct bstree *bstree_delete_node(bstree *tree, bstree *node, bstree *parent)
+struct bstree* bstree_delete_node(bstree* tree, bstree* node, bstree* parent)
 {
     bstree *min, *minparent;
-    if(!node->left) {
+    if (!node->left) {
         bstree_replace_node(parent, node, node->right);
-        if(!parent) {
+        if (!parent) {
             tree = node->right;
         }
-    }
-    else if(!node->right) {
+    } else if (!node->right) {
         bstree_replace_node(parent, node, node->left);
-        if(!parent) {
+        if (!parent) {
             tree = node->left;
         }
-    }
-    else {
+    } else {
         min = node->right;
         minparent = min;
-        while(min->left) {
+        while (min->left) {
             minparent = min;
             min = min->left;
         }
         bstree_replace_node(parent, node, min);
-        if(!parent) {
+        if (!parent) {
             tree = min;
         }
-        if(node->right != min) {
+        if (node->right != min) {
             minparent->left = min->right;
             min->left = node->left;
             min->right = node->right;
-        }
-        else {
+        } else {
             min->left = node->left;
         }
     }
-    free(node); //Нужно додумать
+    free(node);
     return tree;
 }
 
-struct bstree *bstree_delete(bstree *tree, char *key)
+struct bstree* bstree_delete(bstree* tree, char* key)
 {
-    bstree *parent = NULL;
-    bstree *node = tree;
-    while(node && (strcmp(node->key, key) != 0)) {
+    bstree* parent = NULL;
+    bstree* node = tree;
+    while (node && (strcmp(node->key, key) != 0)) {
         parent = node;
-        if(strcmp(key, node->key) < 0) {
+        if (strcmp(key, node->key) < 0) {
             node = node->left;
-        }
-        else {
+        } else {
             node = node->right;
         }
     }
-    if(!node)
+    if (!node)
         return tree;
     return bstree_delete_node(tree, node, parent);
 }
 
-struct bstree *bstree_min(bstree *tree)
+struct bstree* bstree_min(bstree* tree)
 {
-    while(tree->left) {
+    while (tree->left) {
         tree = tree->left;
     }
     return tree;
 }
 
-struct bstree *bstree_max(bstree *tree)
+struct bstree* bstree_max(bstree* tree)
 {
-    while(tree->right) {
+    while (tree->right) {
         tree = tree->right;
     }
     return tree;

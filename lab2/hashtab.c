@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define HASHTAB_SIZE
+#define HASHTAB_SIZE 200003
 
 typedef struct listnode {
 	char *key;
 	uint32_t value;
 	
 	struct listnode *next;
-}
+} listnode;
 
 uint32_t hashtab_hash(char *key)
 {
@@ -17,7 +17,7 @@ uint32_t hashtab_hash(char *key)
 	
 	while(*key)
 		h = h * hash_mul + (uint32_t)*key++;
-	retrun h % HASHTAB_SIZE;
+	return h % HASHTAB_SIZE;
 }
 
 void hashtab_init(struct listnode **hashtab)
