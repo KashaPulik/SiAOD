@@ -1,72 +1,85 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+#include "hashtab.h"
 
-#define HASHTAB_SIZE 200003
-
-typedef struct listnode {
-	char *key;
-	uint32_t value;
-	
-	struct listnode *next;
-} listnode;
-
-uint32_t hashtab_hash(char *key)
+uint32_t KRHash(char* s)
 {
-	uint32_t h = 0, hash_mul = 31;
-	
-	while(*key)
-		h = h * hash_mul + (uint32_t)*key++;
-	return h % HASHTAB_SIZE;
+    uint32_t h = 0, hash_mul = 31;
+
+    while (*s)
+        h = h * hash_mul + (uint32_t)*s++;
+    return h % HASH_SIZE;
 }
 
-void hashtab_init(struct listnode **hashtab)
+uint32_t jenkins_hash(char* key)
 {
-	int i;
-	
-	for (i = 0; i < HASHTAB_SIZE; i++)
-		hashtab[i] = NULL;
+    uint32_t hash = 0;
+    uint32_t i = 0;
+
+    while (key[i] != '\0') {
+        hash += key[i++];
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
+
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
+    hash += (hash << 15);
+
+    return hash % HASH_SIZE;
 }
 
-void hashtab_add(struct listnode **hashtab, char *key, int value)
+void hashtab_init(listnode** hashtab)
 {
-	struct listnode *node;
-	
-	int index = hashtab_hash(key);
-	node = malloc(sizeof(*node));
-	if (node != NULL) {
-		node->key = key;
-		node->value = value;
-		node->next = hashtab[index];
-		hashtab[index] = node;
-	}
+    int i;
+
+    for (i = 0; i < HASH_SIZE; i++)
+        hashtab[i] = NULL;
 }
 
-struct listnode *hashtab_lookup(struct listnode **hashtab, char *key)
+void hashtab_add(
+        listnode** hashtab,
+        char* key,
+        uint32_t value,
+        uint32_t(hashtab_hash)(char*))
 {
-	struct listnode *node;
-	
-	int index = hashtab_hash(key);
-	for (node = hashtab[index]; node != NULL; node = node->next) {
-		if (0 == strcmp(node->key, key))
-			return node;
-	}
-	return NULL;
+    listnode* node;
+
+    uint32_t index = hashtab_hash(key);
+    node = (listnode*)malloc(sizeof(*node));
+    if (node) {
+        node->key = key;
+        node->value = value;
+        node->next = hashtab[index];
+        hashtab[index] = node;
+    }
 }
 
-void hashtab_delete(struct listnode **hashtab, char *key)
+struct listnode*
+hashtab_lookup(listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*))
 {
-	struct listnode *node, *prev = NULL;
-	int index = hashtab_hash(key);
-	for (node = hashtab[index]; node != NULL; node = node->next) {
-		if (0 == strcmp(node->key, key)) {
-			if (prev == NULL)
-				hashtab[index] = node->next;
-			else
-				prev->next = node->next;
-			free(node);
-			return;
-		}
-		prev = node;
-	}
+    listnode* node;
+
+    int index = hashtab_hash(key);
+    for (node = hashtab[index]; node != NULL; node = node->next) {
+        if (0 == strcmp(node->key, key))
+            return node;
+    }
+    return NULL;
+}
+
+void hashtab_delete(
+        listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*))
+{
+    listnode *node, *prev = NULL;
+    int index = hashtab_hash(key);
+    for (node = hashtab[index]; node != NULL; node = node->next) {
+        if (0 == strcmp(node->key, key)) {
+            if (prev == NULL)
+                hashtab[index] = node->next;
+            else
+                prev->next = node->next;
+            free(node);
+            return;
+        }
+    }
+    prev = node;
 }

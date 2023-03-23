@@ -21,6 +21,6 @@ void hashtab_add(
         uint32_t value,
         uint32_t(hashtab_hash)(char*));
 struct listnode*
-hashtab_lookup(listnode** hashtab, char* key, uint32_t(hashtab_hash)(char*));
+hashtab_lookup(listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*));
 void hashtab_delete(
-        listnode** hashtab, char* key, uint32_t(hashtab_hash)(char*));
+        listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*));
