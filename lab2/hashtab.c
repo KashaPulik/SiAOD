@@ -1,5 +1,19 @@
 #include "hashtab.h"
 
+int collisuim_cnt(listnode** hashtab, int size)
+{
+    int q = 0;
+    for (int i = 0; i < size; i++) {
+        if (hashtab[i] != NULL && hashtab[i]->next != NULL)
+            while (hashtab[i] != NULL) {
+                hashtab[i] = hashtab[i]->next;
+                q++;
+            }
+    }
+
+    return q;
+}
+
 uint32_t KRHash(char* s)
 {
     uint32_t h = 0, hash_mul = 31;
@@ -9,22 +23,18 @@ uint32_t KRHash(char* s)
     return h % HASH_SIZE;
 }
 
-uint32_t jenkins_hash(char* key)
+uint32_t jenkins_hash(char* s)
 {
-    uint32_t hash = 0;
-    uint32_t i = 0;
-
-    while (key[i] != '\0') {
-        hash += key[i++];
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
+    uint32_t h = 0;
+    while (*s) {
+        h += (uint32_t)*s++;
+        h += (h << 10);
+        h ^= (h >> 6);
     }
-
-    hash += (hash << 3);
-    hash ^= (hash >> 11);
-    hash += (hash << 15);
-
-    return hash % HASH_SIZE;
+    h += (h << 3);
+    h ^= (h >> 11);
+    h += (h << 15);
+    return h % HASH_SIZE;
 }
 
 void hashtab_init(listnode** hashtab)
@@ -54,7 +64,7 @@ void hashtab_add(
 }
 
 struct listnode*
-hashtab_lookup(listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*))
+hashtab_lookup(listnode** hashtab, char* key, uint32_t (*hashtab_hash)(char*))
 {
     listnode* node;
 
@@ -67,7 +77,7 @@ hashtab_lookup(listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*))
 }
 
 void hashtab_delete(
-        listnode** hashtab, char* key, uint32_t(*hashtab_hash)(char*))
+        listnode** hashtab, char* key, uint32_t (*hashtab_hash)(char*))
 {
     listnode *node, *prev = NULL;
     int index = hashtab_hash(key);

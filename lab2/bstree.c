@@ -128,16 +128,6 @@ struct bstree* bstree_max(bstree* tree)
     return tree;
 }
 
-void bstree_traverse_in_order(
-        bstree* tree, void (*bstree_process_node)(bstree*))
-{
-    if (tree) {
-        bstree_traverse_in_order(tree->left, bstree_process_node);
-        bstree_process_node(tree);
-        bstree_traverse_in_order(tree->right, bstree_process_node);
-    }
-}
-
 void bstree_delete_tree(bstree* tree)
 {
     if (tree) {

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +20,5 @@ struct bstree* bstree_delete_node(bstree* tree, bstree* node, bstree* parent);
 struct bstree* bstree_delete(bstree* tree, char* key);
 struct bstree* bstree_min(bstree* tree);
 struct bstree* bstree_max(bstree* tree);
-void bstree_traverse_in_order(
-        bstree* tree, void (*bstree_process_node)(bstree*));
 void bstree_delete_tree(bstree* tree);
 void bstree_print(bstree* tree, int space);

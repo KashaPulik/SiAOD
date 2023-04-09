@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +14,7 @@ typedef struct listnode {
     struct listnode* next;
 } listnode;
 
+int collisuim_cnt(listnode** hashtab, int size);
 uint32_t KRHash(char* s);
 uint32_t jenkins_hash(char* key);
 void hashtab_init(listnode** hashtab);
