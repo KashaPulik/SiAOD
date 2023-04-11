@@ -13,7 +13,8 @@ double wtime()
 {
     struct timeval t;
     gettimeofday(&t, NULL);
-    return (double)t.tv_sec + (double)t.tv_usec * 1E-6;
+    //printf("%.f\n", (double)t.tv_sec + (double)t.tv_usec * 1E-6);
+    return (double)t.tv_usec;
 }
 
 bstree* fill_bstree_from_file(bstree* tree, char* filename, uint32_t amount)
@@ -58,14 +59,21 @@ int main()
             char* word = words[getrand(0, i)];
             double t = wtime();
             bstree* node = bstree_lookup(tree, word);
-            sleep(1);
-            t = wtime() - t - 1;
-            printf("%.6lf ", t);
+            //printf("%s ", node->key);
+            //sleep(1);
+            usleep(1000);
+            double t2 = wtime();
+            t = t2 - t;
+            printf("%.6lf ", t * 0.000001);
+            //sleep(1);
             t = wtime();
             listnode* lnode = hashtab_lookup(hashtab, word, KRHash);
-            sleep(1);
-            t = wtime() - t - 1;
-            printf("%.6lf\n", t);
+            //printf("%s ", lnode->key);
+            //sleep(1);
+            usleep(500);
+            t2 = wtime();
+            t = t2 - t;
+            printf("%.6lf\n", t * 0.000001);
             node = node;
             lnode = lnode;
         }

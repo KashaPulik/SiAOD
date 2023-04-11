@@ -47,31 +47,27 @@ int main()
     char* words[HASH_SIZE];
     read_file("slovasort.txt", words);
     bstree* tree = bstree_create(words[0], 0);
+    listnode* hashtab[HASH_SIZE];
+    hashtab_init(hashtab);
+    hashtab_add(hashtab, words[0], 0, KRHash);
     for (int i = 1; i < 200000; i++) {
         bstree_add(tree, words[i], i);
+        hashtab_add(hashtab, words[i], i, KRHash);
         if ((i + 1) % 10000 == 0) {
+            printf("%d ", i + 1);
             char* word = words[i];
             double t = wtime();
             bstree* node = bstree_lookup(tree, word);
             sleep(1);
             t = wtime() - t - 1;
-            node = node;
-            printf("n = %d; time = %.6lf\n", i + 1, t);
-        }
-    }
-
-    listnode* hashtab[HASH_SIZE];
-    hashtab_init(hashtab);
-    for (int i = 0; i < 200000; i++) {
-        hashtab_add(hashtab, words[i], i, KRHash);
-        if ((i + 1) % 10000 == 0) {
-            char* word = words[i];
-            double t = wtime();
-            listnode* node = hashtab_lookup(hashtab, word, KRHash);
+            printf("%.6lf ", t);
+            t = wtime();
+            listnode* lnode = hashtab_lookup(hashtab, word, KRHash);
             sleep(1);
             t = wtime() - t - 1;
+            printf("%.6lf\n", t);
             node = node;
-            printf("n = %d; time = %.6lf\n", i + 1, t);
+            lnode = lnode;
         }
     }
 }

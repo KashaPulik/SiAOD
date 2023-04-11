@@ -69,7 +69,7 @@ int main()
             Jt = wtime() - Jt - 1;
             
             node = node;
-            printf("n = %d; KR time = %.6lf; KR c = %d; J time = %.6lf; J c = %d\n", i + 1, KRt, collisuim_cnt(KRtab, HASH_SIZE), Jt, collisuim_cnt(Jtab, HASH_SIZE));
+            printf("%d %.6lf %d %.6lf %d\n", i + 1, KRt, collisuim_cnt(KRtab, HASH_SIZE), Jt, collisuim_cnt(Jtab, HASH_SIZE));
         }
     }
 }
