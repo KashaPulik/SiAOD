@@ -45,7 +45,7 @@ void read_file(char* filename, char** words)
 int main()
 {
     char* words[HASH_SIZE];
-    read_file("slova.txt", words);
+    read_file("txt/slova.txt", words);
 
     listnode* KRtab[HASH_SIZE];
     listnode* Jtab[HASH_SIZE];
@@ -61,12 +61,12 @@ int main()
             char* word = words[getrand(0, i)];
             double KRt = wtime();
             listnode* node = hashtab_lookup(KRtab, word, KRHash);
-            sleep(1);
-            KRt = wtime() - KRt - 1;
+            usleep(500);
+            KRt = wtime() - KRt;
             double Jt = wtime();
             node = hashtab_lookup(Jtab, word, jenkins_hash);
-            sleep(1);
-            Jt = wtime() - Jt - 1;
+            usleep(500);
+            Jt = wtime() - Jt;
             
             node = node;
             printf("%d %.6lf %d %.6lf %d\n", i + 1, KRt, collisuim_cnt(KRtab, HASH_SIZE), Jt, collisuim_cnt(Jtab, HASH_SIZE));

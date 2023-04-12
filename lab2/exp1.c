@@ -46,7 +46,7 @@ void read_file(char* filename, char** words)
 int main()
 {
     char* words[HASH_SIZE];
-    read_file("slova.txt", words);
+    read_file("txt/slova.txt", words);
     bstree* tree = bstree_create(words[0], 0);
     listnode* hashtab[HASH_SIZE];
     hashtab_init(hashtab);
