@@ -58,13 +58,11 @@ int main()
             char* word = words[i];
             double t = wtime();
             bstree* node = bstree_lookup(tree, word);
-            sleep(1);
-            t = wtime() - t - 1;
+            t = wtime() - t;
             printf("%.6lf ", t);
             t = wtime();
             listnode* lnode = hashtab_lookup(hashtab, word, KRHash);
-            sleep(1);
-            t = wtime() - t - 1;
+            t = wtime() - t;
             printf("%.6lf\n", t);
             node = node;
             lnode = lnode;

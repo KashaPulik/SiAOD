@@ -15,7 +15,7 @@ set xlabel "Количество элементов в словаре" font "Ari
 set ylabel "Время поиска элемента, с" rotate by 90  font "Arial, 24"
 set xtics 10000
 set ytics 0.0001
-set yrange [0:0.001]
+set yrange [0:0.0003]
 set mxtics
 set format x "%6.0f"
 set format y "%.6f"

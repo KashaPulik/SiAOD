@@ -61,11 +61,9 @@ int main()
             char* word = words[getrand(0, i)];
             double KRt = wtime();
             listnode* node = hashtab_lookup(KRtab, word, KRHash);
-            usleep(500);
             KRt = wtime() - KRt;
             double Jt = wtime();
             node = hashtab_lookup(Jtab, word, jenkins_hash);
-            usleep(500);
             Jt = wtime() - Jt;
             
             node = node;

@@ -1,4 +1,4 @@
-#include "hashtab.h"
+#include "../hashtab.h"
 
 int main()
 {
