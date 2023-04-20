@@ -93,13 +93,17 @@ struct heapnode heap_extract_min(Heap* h, int** indexes)
     return minnode;
 }
 
-int heap_decrease_key(Heap* h, int index, int newkey)
+int heap_decrease_key(Heap* h, int index, int newkey, int** indexes)
 {
     if (h->nodes[index].key <= newkey)
         return -1;
 
+    int tmp;
     h->nodes[index].key = newkey;
     while (index > 1 && h->nodes[index].key < h->nodes[index / 2].key) {
+        tmp = (*indexes)[h->nodes[index].value];
+        (*indexes)[h->nodes[index].value] = (*indexes)[h->nodes[index / 2].value];
+        (*indexes)[h->nodes[index / 2].value] = tmp;
         heap_swap(&h->nodes[index], &h->nodes[index / 2]);
         index /= 2;
     }

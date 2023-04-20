@@ -28,14 +28,21 @@
 
 int main()
 {
-    struct graph* g = make_lattice_graph(100, 100);
+    struct graph* g = make_lattice_graph(10, 100);
     // print_graph(g);
     int* D = malloc(g->nvertices * sizeof(int));
     int* prev = malloc(g->nvertices * sizeof(int));
     shortest_path_dijkstra(g, 1, D, prev);
+    D = NULL;
+    free(D);
+    D = malloc(g->nvertices * sizeof(int));
     print_pathlens(g, D);
     int pathlen;
     int* path = NULL;
     pathlen = search_shortest_path(g, 1, 7, &path);
     print_path(pathlen, path);
+    graph_clear(g);
+    free(D);
+    free(prev);
+    free(path);
 }

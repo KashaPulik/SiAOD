@@ -21,4 +21,4 @@ struct heapnode* heap_min(Heap* h);
 int heap_insert(Heap* h, int key, int value, int** indexes);
 int* heap_heapify(Heap* h, int index, int** indexes);
 struct heapnode heap_extract_min(Heap* h, int** indexes);
-int heap_decrease_key(Heap* h, int index, int newkey);
+int heap_decrease_key(Heap* h, int index, int newkey, int** indexes);
