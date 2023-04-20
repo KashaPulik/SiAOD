@@ -21,5 +21,5 @@ int graph_get_edge(struct graph* g, int i, int j);
 void print_graph(struct graph* g);
 struct graph* make_connected_graph(int nvertices, int weight);
 struct graph* make_lattice_graph(int side_length, int weight);
-void print_pathlens(struct graph* g, int* D);
+void print_pathlens(struct graph* g, int src);
 void print_path(int pathlen, int* path);
