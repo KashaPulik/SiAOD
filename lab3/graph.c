@@ -1,4 +1,5 @@
 #include "./graph.h"
+#include "./dijkstra.h"
 
 void graph_clear(struct graph* g)
 {
@@ -24,8 +25,8 @@ struct graph* graph_create(int nvertices)
 
 void graph_free(struct graph* g)
 {
-    free(g->m);
     free(g->visited);
+    free(g->m);
     free(g);
 }
 
@@ -88,20 +89,25 @@ struct graph* make_connected_graph(int nvertices, int weight)
 struct graph* make_lattice_graph(int side_length, int weight)
 {
     struct graph* g = graph_create(side_length * side_length);
-    for(int i = 1; i < g->nvertices; i++) {
-        if(i % side_length != 0)
+    for (int i = 1; i < g->nvertices; i++) {
+        if (i % side_length != 0)
             graph_set_edge(g, i, i + 1, rand() % weight + 1);
-        if((i - g->nvertices + side_length) < 1)
+        if ((i - g->nvertices + side_length) < 1)
             graph_set_edge(g, i, i + side_length, rand() % weight + 1);
     }
     return g;
 }
 
-void print_pathlens(struct graph* g, int* D)
+void print_pathlens(struct graph* g, int src)
 {
+    int* D;
+    int* prev;
+    shortest_path_dijkstra(g, src, &D, &prev);
     for (int i = 0; i < g->nvertices; i++) {
         printf("1 -> %d = %d\n", i + 1, D[i]);
     }
+    free(D);
+    free(prev);
 }
 
 void print_path(int pathlen, int* path)
