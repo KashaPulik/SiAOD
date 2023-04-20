@@ -28,7 +28,7 @@
 
 int main()
 {
-    struct graph* g = make_lattice_graph(3, 1);
+    struct graph* g = make_lattice_graph(100, 100);
     // print_graph(g);
     int* D = malloc(g->nvertices * sizeof(int));
     int* prev = malloc(g->nvertices * sizeof(int));

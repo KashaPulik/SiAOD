@@ -78,7 +78,7 @@ void shortest_path_dijkstra(struct graph* g, int src, int* D, int* prev)
     // for (int v = 0; v < g->nvertices; v++) {
     //     g->visited[v] = 0;
     // }
-    int indexes[g->nvertices];
+    int* indexes = malloc(sizeof(int) * g->nvertices);
     src--;
     struct heapnode node;
     Heap* Q = heap_create(g->nvertices);
@@ -88,13 +88,14 @@ void shortest_path_dijkstra(struct graph* g, int src, int* D, int* prev)
             continue;
         D[i] = 1000000000;
         prev[i] = -1;
-        indexes[i] = heap_insert(Q, D[i], i);
+        heap_insert(Q, D[i], i, &indexes);
     }
     D[src] = 0;
     prev[src] = -1;
-    indexes[src] = heap_insert(Q, D[src], src);
+    heap_insert(Q, D[src], src, &indexes);
     for (i = 0; i < g->nvertices; i++) {
-        node = heap_extract_min(Q);
+        // printf("%d %d %d %d %d %d %d %d %d \n", indexes[0], indexes[1], indexes[2], indexes[3], indexes[4], indexes[5], indexes[6], indexes[7], indexes[8]);
+        node = heap_extract_min(Q, &indexes);
         g->visited[node.value] = 1;
         for (j = 0; j < g->nvertices; j++) {
             if (graph_get_edge(g, node.value + 1, j + 1) == 0)
