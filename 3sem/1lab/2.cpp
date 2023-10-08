@@ -1,5 +1,8 @@
+#include <cmath>
+#include <queue>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 enum { BLACK, RED };
 
@@ -8,7 +11,7 @@ typedef struct rbtree {
     struct rbtree* left;
     struct rbtree* right;
     int key;
-    _Bool color;
+    bool color;
 } rbtree;
 
 rbtree* null = NULL;
@@ -17,7 +20,7 @@ void init_null()
 {
     if (null)
         return;
-    null = malloc(sizeof(*null));
+    null = (rbtree*)malloc(sizeof(*null));
     null->parent = NULL;
     null->left = NULL;
     null->right = NULL;
@@ -27,7 +30,7 @@ void init_null()
 
 rbtree* create_node(int key)
 {
-    rbtree* node = malloc(sizeof(*node));
+    rbtree* node = (rbtree*)malloc(sizeof(*node));
     node->parent = null;
     node->left = null;
     node->right = null;
@@ -65,7 +68,7 @@ rbtree* left_rotate(rbtree* T, rbtree* x)
 
 rbtree* right_rotate(rbtree* T, rbtree* x)
 {
-    rbtree* y = x->right;
+    rbtree* y = x->left;
     x->left = y->right;
 
     if (y->right != null)
@@ -73,10 +76,10 @@ rbtree* right_rotate(rbtree* T, rbtree* x)
     y->parent = x->parent;
     if (x->parent == null)
         T = y;
-    else if (x == x->parent->right)
-        x->parent->right = y;
-    else
+    else if (x == x->parent->left)
         x->parent->left = y;
+    else
+        x->parent->right = y;
     y->right = x;
     x->parent = y;
     return T;
@@ -121,23 +124,23 @@ rbtree* insert_fixup(rbtree* T, rbtree* z)
     return T;
 }
 
-rbtree* insert(rbtree* T, rbtree *z)
+rbtree* insert(rbtree* T, rbtree* z)
 {
     rbtree* y = null;
     rbtree* x = T;
-    while(x != null) {
+    while (x != null) {
         y = x;
-        if(z->key < x->key)
+        if (z->key < x->key)
             x = x->left;
         else
             x = x->right;
     }
     z->parent = y;
-    if(y == null)
+    if (y == null)
         T = z;
-    else if(z->key < y->key)
+    else if (z->key < y->key)
         y->left = z;
-    else 
+    else
         y->right = z;
     z->left = null;
     z->right = null;
@@ -145,59 +148,81 @@ rbtree* insert(rbtree* T, rbtree *z)
     return insert_fixup(T, z);
 }
 
-void PrintTree(rbtree* tree, int n)
+std::vector<rbtree*> bfs(rbtree* tree)
 {
-    if (tree->left)
-        PrintTree(tree->left, n + 1);
-
-    for (int i = 0; i < n; i++)
-        printf(" ");
-    printf("%d\n", tree->key);
-
-    if (tree->right)
-        PrintTree(tree->right, n + 1);
-}
-
-void print_node(rbtree* node)
-{
-    printf("[%d] ", node->key);
+    std::queue<rbtree*> q;
+    std::vector<rbtree*> vector;
+    q.push(tree);
+    while (q.size() != 0) {
+        rbtree* node = q.front();
+        vector.push_back(node);
+        // printf("%d\n", node->key);
+        q.pop();
+        if (node->left) {
+            q.push(node->left);
+        }
+        if (node->right) {
+            q.push(node->right);
+        }
+    }
+    return vector;
 }
 
 void print_space(int n)
 {
-    int pow = 2;
-    for(int i = 1; i < n; i++)
-        pow *= pow;
-    for(int i = 0; i < pow - 2; i++)
-        printf(" ");
+    printf("%*c", n, ' ');
 }
 
-int rbh(rbtree* tree)
+int indent(int n)
 {
-    rbtree* x = tree;
-    rbtree* y = tree;
-    int n = 0;
-    while((x != null) || (y != null)) {
-        x = x->left;
-        y = y->right;
-        n++;
-    }
-    return n;
+    return pow(2, n) - 2;
 }
 
 void print(rbtree* tree)
 {
-    print_space(rbh(tree));
-    print_node(tree);
+    std::vector<rbtree*> vector = bfs(tree);
+    int size = vector.size();
+    int n = 0;
+    n = (int)log2(size) + 1;
+    int margin_left = indent(n);
+    int b = indent(n + 1) - 1;
+    int i = 0;
+    int cur_level = 1;
+    print_space(margin_left);
+    while (i < size) {
+        if (i == pow(2, cur_level) - 1) {
+            cur_level++;
+            margin_left = indent(--n);
+            b = indent(n + 1) - 1;
+            printf("\n");
+            print_space(margin_left);
+        }
+        if (vector[i]->key < 0)
+            printf("[-]");
+        else if(vector[i]->color == RED)
+            printf("\e[38;5;1m[%d]\e[0m", vector[i]->key);
+        else
+            printf("[%d]", vector[i]->key);
+        print_space(b);
+        i++;
+    }
+    printf("\n");
+    for (auto& i : vector)
+        printf("%d\n", i->key);
 }
 
 int main()
 {
-    rbtree *tree = init_tree(5);
+    rbtree* tree = init_tree(5);
     tree = insert(tree, create_node(3));
     tree = insert(tree, create_node(6));
-    printf("%d\n", tree->key);
-    printf("%d\n", tree->left->key);
-    printf("%d\n", tree->right->key);
-    PrintTree(tree, 0);
+    tree = insert(tree, create_node(1));
+    tree = insert(tree, create_node(2));
+    tree = insert(tree, create_node(4));
+
+    // print_space(5);
+    // printf("%d\n", tree->key);
+    // printf("%d\n", tree->left->key);
+    // printf("%d\n", tree->right->key);
+    print(tree);
 }
