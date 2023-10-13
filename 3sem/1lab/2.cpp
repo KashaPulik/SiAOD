@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 #include <queue>
 #include <stdio.h>
 #include <stdlib.h>
@@ -157,61 +158,58 @@ rbtree* rb_transplant(rbtree* T, rbtree* u, rbtree* v)
     else
         u->parent->right = v;
     v->parent = u->parent;
+    return T;
 }
 
 rbtree* rb_delete_fixup(rbtree* T, rbtree* x)
 {
-    while(x != T && x->color == BLACK)
-    {
-        if(x == x->parent->left) {
+    while (x != T && x->color == BLACK) {
+        if (x == x->parent->left) {
             rbtree* w = x->parent->right;
-            if(w->color == RED) {
+            if (w->color == RED) {
                 w->color = BLACK;
                 x->parent->color = RED;
-                left_rotate(T, x->parent);
+                T = left_rotate(T, x->parent);
                 w = x->parent->right;
             }
-            if(w->left->color == BLACK && w->right->color == BLACK) {
+            if (w->left->color == BLACK && w->right->color == BLACK) {
                 w->color = RED;
                 x = x->parent;
-            }
-            else if(w->right->color == BLACK) {
-                w->left->color = BLACK;
-                w->color = RED;
-                right_rotate(T, w);
-                w = x->parent->right;
-            }
-            else {
+            } else {
+                if (w->right->color == BLACK) {
+                    w->left->color = BLACK;
+                    w->color = RED;
+                    T = right_rotate(T, w);
+                    w = x->parent->right;
+                }
                 w->color = x->parent->color;
                 x->parent->color = BLACK;
                 w->right->color = BLACK;
-                left_rotate(T, x->parent);
+                T = left_rotate(T, x->parent);
                 x = T;
             }
-        }
-        else {
+        } else {
             rbtree* w = x->parent->left;
-            if(w->color == RED) {
+            if (w->color == RED) {
                 w->color = BLACK;
                 x->parent->color = RED;
-                right_rotate(T, x->parent);
+                T = right_rotate(T, x->parent);
                 w = x->parent->left;
             }
-            if(w->right->color == BLACK && w->left->color == BLACK) {
+            if (w->right->color == BLACK && w->left->color == BLACK) {
                 w->color = RED;
                 x = x->parent;
-            }
-            else if(w->left->color == BLACK) {
-                w->right->color = BLACK;
-                w->color = RED;
-                left_rotate(T, w);
-                w = x->parent->left;
-            }
-            else {
+            } else {
+                if (w->left->color == BLACK) {
+                    w->right->color = BLACK;
+                    w->color = RED;
+                    T = left_rotate(T, w);
+                    w = x->parent->left;
+                }
                 w->color = x->parent->color;
                 x->parent->color = BLACK;
                 w->right->color = BLACK;
-                right_rotate(T, x->parent);
+                T = right_rotate(T, x->parent);
                 x = T;
             }
         }
@@ -220,10 +218,52 @@ rbtree* rb_delete_fixup(rbtree* T, rbtree* x)
     return T;
 }
 
+rbtree* tree_minimum(rbtree* T)
+{
+    rbtree* min = T;
+    while (min->left != null)
+        min = min->left;
+    return min;
+}
+
+rbtree* tree_maximum(rbtree* T)
+{
+    rbtree* max = T;
+    while (max->right != null)
+        max = max->right;
+    return max;
+}
+
 rbtree* rb_delete(rbtree* T, rbtree* z)
 {
     rbtree* y = z;
-    
+    rbtree* x = NULL;
+    bool y_original_color = y->color;
+    if (z->left == null) {
+        x = z->right;
+        T = rb_transplant(T, z, z->right);
+    } else if (z->right == null) {
+        x = z->left;
+        T = rb_transplant(T, z, z->left);
+    } else {
+        y = tree_minimum(z->right);
+        y_original_color = y->color;
+        x = y->right;
+        if (y->parent == z) {
+            x->parent = y;
+        } else {
+            T = rb_transplant(T, y, y->right);
+            y->right = z->right;
+            y->right->parent = y;
+        }
+        T = rb_transplant(T, z, y);
+        y->left = z->left;
+        y->left->parent = y;
+        y->color = z->color;
+    }
+    if (y_original_color == BLACK)
+        T = rb_delete_fixup(T, x);
+    return T;
 }
 
 std::vector<rbtree*> bfs(rbtree* tree)
@@ -298,9 +338,12 @@ int main()
     // tree = insert(tree, create_node(9));
     // tree = insert(tree, create_node(0));
     rbtree* tree = init_tree(0);
-    tree = insert(tree, create_node(1));
-    tree = insert(tree, create_node(2));
-    tree = insert(tree, create_node(3));
+    rbtree* node1 = create_node(1);
+    rbtree* node2 = create_node(2);
+    rbtree* node3 = create_node(3);
+    tree = insert(tree, node1);
+    tree = insert(tree, node2);
+    tree = insert(tree, node3);
     // tree = insert(tree, create_node(4));
     // tree = insert(tree, create_node(5));
     // tree = insert(tree, create_node(6));
@@ -313,4 +356,20 @@ int main()
     // printf("%d\n", tree->left->key);
     // printf("%d\n", tree->right->key);
     print(tree);
+    tree = rb_delete(tree, node3);
+    std::cout << "-------------------------" << std::endl;
+    print(tree);
+    tree = rb_delete(tree, node2);
+    std::cout << "-------------------------" << std::endl;
+
+    print(tree);
+    tree = rb_delete(tree, node1);
+    std::cout << "-------------------------" << std::endl;
+
+    print(tree);
+
+    tree = rb_delete(tree, tree);
+    std::cout << "-------------------------" << std::endl;
+    print(tree);
+
 }
