@@ -1,7 +1,7 @@
 APP_NAME = app
 
-CFLAGS = -Wall -Wextra -Werror
-CPPFLAGS = -I src -MMD -lm
+CFLAGS = -Wall -Wextra -Werror -O0 -g
+CPPFLAGS = -I src -MMD -lm -lpthread
 CC = g++
 
 SRC_DIR = src
@@ -30,7 +30,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 
 .PHONY: run
 run: all
-	./bin/app
+	taskset -c 0 ./bin/app
 	python3 ./src/graphic.py
 
 .PHONY: clean

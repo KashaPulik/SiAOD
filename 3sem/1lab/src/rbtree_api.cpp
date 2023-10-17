@@ -117,9 +117,9 @@ void rbtree_free(rbtree* T)
     }
     if (T == null_adress)
         return;
-    if (T->left != null_adress)
+    if (T->left != null_adress && T->left != NULL)
         rbtree_free(T->left);
-    if (T->right != null_adress)
+    if (T->right != null_adress && T->right != NULL)
         rbtree_free(T->right);
     free(T);
 }

@@ -13,4 +13,4 @@ plt.legend()
 plt.grid(True)
 
 # Сохранение графика в файл
-plt.savefig("./graphic/graphic.png", dpi=600)  # dpi - это разрешение изображения, можно настроить по своему усмотрению
+plt.savefig("./graphic/graphic.png", dpi=300)  # dpi - это разрешение изображения, можно настроить по своему усмотрению
