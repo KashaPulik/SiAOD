@@ -4,7 +4,7 @@
 #include <experimental_funcs.hpp>
 #include <rbtree_api.hpp>
 
-#define N_ITERATIONS 100000
+#define N_ITERATIONS 1000
 #define N_KEYS 1000000
 #define STEP 1000
 
