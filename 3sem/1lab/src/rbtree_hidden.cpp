@@ -162,6 +162,15 @@ rbtree* rbtree_delete_fixup(rbtree* T, rbtree* x)
     return T;
 }
 
+void delete_tree(rbtree* a)
+{
+    if (a->left != null)
+        delete_tree(a->left);
+    if (a->right != null)
+        delete_tree(a->right);
+    free(a);
+}
+
 std::vector<rbtree*> bfs(rbtree* tree)
 {
     std::queue<rbtree*> q;

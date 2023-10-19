@@ -26,6 +26,7 @@ rbtree* right_rotate(rbtree* T, rbtree* x);
 rbtree* insert_fixup(rbtree* T, rbtree* z);
 rbtree* transplant(rbtree* T, rbtree* u, rbtree* v);
 rbtree* rbtree_delete_fixup(rbtree* T, rbtree* x);
+void delete_tree(rbtree* a);
 std::vector<rbtree*> bfs(rbtree* tree);
 void print_space(int n);
 int indent(int n);

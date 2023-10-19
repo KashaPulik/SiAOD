@@ -8,7 +8,7 @@
 
 #define N_ITERATIONS 1000
 #define N_KEYS 50000
-#define STEP 1
+#define STEP 5
 
 rbtree* rbtree_delete_fixup(rbtree* T, rbtree* x);
 
@@ -26,6 +26,7 @@ void first_case()
     tree = rbtree_delete_fixup(tree, tree->left->left);
     std::cout << "---------------------------------------------------------\n";
     rbtree_print(tree->left);
+    rbtree_free(tree);
 }
 
 void second_case()
@@ -41,6 +42,7 @@ void second_case()
     tree = rbtree_delete_fixup(tree, tree->left->left);
     std::cout << "---------------------------------------------------------\n";
     rbtree_print(tree->left);
+    rbtree_free(tree);
 }
 
 void third_case()
@@ -57,6 +59,7 @@ void third_case()
     tree = rbtree_delete_fixup(tree, tree->left->left);
     std::cout << "---------------------------------------------------------\n";
     rbtree_print(tree->left);
+    rbtree_free(tree);
 }
 
 void fourth_case()
@@ -74,6 +77,29 @@ void fourth_case()
     tree = rbtree_delete_fixup(tree, tree->left->left);
     std::cout << "---------------------------------------------------------\n";
     rbtree_print(tree->left);
+    rbtree_free(tree);
+}
+
+void rbtree_insert_demonstrate()
+{
+    rbtree* tree = init_tree(11);
+    tree = rbtree_insert(tree, create_node(2));
+    tree = rbtree_insert(tree, create_node(14));
+    tree = rbtree_insert(tree, create_node(1));
+    tree = rbtree_insert(tree, create_node(7));
+    tree = rbtree_insert(tree, create_node(15));
+    tree = rbtree_insert(tree, create_node(5));
+    tree = rbtree_insert(tree, create_node(8));
+    rbtree_print(tree);
+    tree = rbtree_insert(tree, create_node(4));
+    rbtree_print(tree);
+    tree = rbtree_delete(tree, 11);
+    rbtree_print(tree);
+    rbtree_free(tree);
+}
+
+void rbtree_delete_demonstrate()
+{
 }
 
 int main()
@@ -116,4 +142,5 @@ int main()
     second_case();
     third_case();
     fourth_case();
+    rbtree_insert_demonstrate();
 }

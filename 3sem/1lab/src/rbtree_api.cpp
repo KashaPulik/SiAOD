@@ -109,19 +109,11 @@ rbtree* rbtree_delete(rbtree* T, int key)
 
 void rbtree_free(rbtree* T)
 {
-    static rbtree* null_adress = null;
-    if (tree_count == 1) {
-        --tree_count;
+    delete_tree(T);
+    if (tree_count-- == 1) {
         free(null);
         null = NULL;
     }
-    if (T == null_adress)
-        return;
-    if (T->left != null_adress && T->left != NULL)
-        rbtree_free(T->left);
-    if (T->right != null_adress && T->right != NULL)
-        rbtree_free(T->right);
-    free(T);
 }
 
 void rbtree_print(rbtree* tree)
