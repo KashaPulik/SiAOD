@@ -6,6 +6,8 @@
 // #include <rbtree_hidden.hpp>
 #include <rbtree_api.hpp>
 
+#include<stdio.h>
+
 #define N_ITERATIONS 1000
 #define N_KEYS 50000
 #define STEP 5
@@ -82,19 +84,19 @@ void fourth_case()
 
 void rbtree_insert_demonstrate()
 {
-    rbtree* tree = init_tree(11);
-    tree = rbtree_insert(tree, create_node(2));
-    tree = rbtree_insert(tree, create_node(14));
-    tree = rbtree_insert(tree, create_node(1));
-    tree = rbtree_insert(tree, create_node(7));
-    tree = rbtree_insert(tree, create_node(15));
-    tree = rbtree_insert(tree, create_node(5));
-    tree = rbtree_insert(tree, create_node(8));
+    rbtree* tree = init_tree('a');
+    tree = rbtree_insert(tree, create_node('b'));
+    tree = rbtree_insert(tree, create_node('v'));
+    tree = rbtree_insert(tree, create_node('g'));
+    tree = rbtree_insert(tree, create_node('d'));
+    // tree = rbtree_insert(tree, create_node(15));
+    // tree = rbtree_insert(tree, create_node(5));
+    // tree = rbtree_insert(tree, create_node(8));
     rbtree_print(tree);
-    tree = rbtree_insert(tree, create_node(4));
-    rbtree_print(tree);
-    tree = rbtree_delete(tree, 11);
-    rbtree_print(tree);
+    // tree = rbtree_insert(tree, create_node(4));
+    // rbtree_print(tree);
+    // tree = rbtree_delete(tree, 11);
+    // rbtree_print(tree);
     rbtree_free(tree);
 }
 
