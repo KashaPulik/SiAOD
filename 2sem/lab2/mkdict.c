@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
+#include <time.h>
 
 void mkdict(char* filename, uint32_t nwords, uint32_t wordlen)
 {
@@ -21,6 +22,7 @@ void mkdict(char* filename, uint32_t nwords, uint32_t wordlen)
 
 int main(int argc, char* argv[])
 {
+	srand(time(0));
 	if(argc != 4) {
 		printf("Wrong number of args\n");
 		exit(1);
