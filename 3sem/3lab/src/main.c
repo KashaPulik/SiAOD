@@ -23,8 +23,12 @@ int main()
     fibheap *root3 = fibheap_union(root, root2);
 	fibheap_print(root3->min);
 
+	printf("\n");
+
     root3 = fibheap_consolidate(root3);
 	fibheap_print(root3->min);
+
+    fibheap_delete_heap(root3);
 
 	return 0;
 }

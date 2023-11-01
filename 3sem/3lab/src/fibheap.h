@@ -37,4 +37,5 @@ void fibheap_decrease_key(fibheap* heap, fibheap_node* x, int newkey);
 void fibheap_cut(fibheap* heap, fibheap_node* x, fibheap_node* y);
 void fibheap_cascading_cut(fibheap* heap, fibheap_node* y);
 void fibheap_delete_node(fibheap* heap, fibheap_node* x);
+void fibheap_delete_heap(fibheap* heap);
 void fibheap_print(fibheap_node* n);
