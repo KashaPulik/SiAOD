@@ -1,6 +1,9 @@
-#include <math.h>
+#pragma once
+
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 typedef struct fibheap_node {
     int key;
@@ -17,14 +20,21 @@ typedef struct fibheap {
     int nnodes;
 } fibheap;
 
+fibheap* make_fibheap();
+fibheap_node* make_fibheap_node(int key);
 fibheap* fibheap_insert(fibheap* heap, int key);
-fibheap* fibheap_add_node_to_root_list(fibheap_node* node, fibheap* h);
+void fibheap_add_node_to_root_list(fibheap_node* node, fibheap_node* h);
 fibheap_node* fibheap_min(fibheap* heap);
 fibheap* fibheap_union(fibheap* heap1, fibheap* heap2);
 fibheap_node* fibheap_link_lists(fibheap_node* heap1, fibheap_node* heap2);
 fibheap_node* fibheap_delete_min(fibheap* heap);
-fibheap* fibheap_remove_node_from_root_list(fibheap_node* z, fibheap* heap);
+void fibheap_remove_node_from_root_list(fibheap_node* z);
 fibheap* fibheap_consolidate(fibheap* heap);
 void fibheap_swap(fibheap_node** x, fibheap_node** y);
 int D(int n);
-fibheap* fibheap_link(fibheap* heap, fibheap_node* x, fibheap_node* y);
+void fibheap_link(fibheap_node* x, fibheap_node* y);
+void fibheap_decrease_key(fibheap* heap, fibheap_node* x, int newkey);
+void fibheap_cut(fibheap* heap, fibheap_node* x, fibheap_node* y);
+void fibheap_cascading_cut(fibheap* heap, fibheap_node* y);
+void fibheap_delete_node(fibheap* heap, fibheap_node* x);
+void fibheap_print(fibheap_node* n);
