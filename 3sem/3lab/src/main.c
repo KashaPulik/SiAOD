@@ -1,34 +1,44 @@
-#include <fibheap.h>
+#include "fibheap.h"
 
 int main()
 {
 	fibheap *root = make_fibheap();
-	root = fibheap_insert(root, 5);
+	root = fibheap_insert(root, 1);
 	root = fibheap_insert(root, 2);
 	root = fibheap_insert(root, 3);
+	root = fibheap_insert(root, 4);
+	root = fibheap_insert(root, 5);
 	root = fibheap_insert(root, 6);
+	root = fibheap_insert(root, 7);
+	root = fibheap_insert(root, 8);
+	root = fibheap_insert(root, 9);
+	root = fibheap_insert(root, 0);
+	root = fibheap_insert(root, 10);
+	root = fibheap_insert(root, 11);
 	fibheap_print(root->min);
 
-	printf("\n");
-
-	fibheap *root2 = make_fibheap();
-	root2 = fibheap_insert(root2, 1);
-	root2 = fibheap_insert(root2, 4);
-	root2 = fibheap_insert(root2, 7);
-	root2 = fibheap_insert(root2, 0);
-	fibheap_print(root2->min);
-
-	printf("\n");
-
-    fibheap *root3 = fibheap_union(root, root2);
-	fibheap_print(root3->min);
-
-	printf("\n");
-
-    root3 = fibheap_consolidate(root3);
-	fibheap_print(root3->min);
-
-    fibheap_delete_heap(root3);
+	printf("%d\n", fibheap_delete_min(root)->key);
+	fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
+	// printf("%d\n", fibheap_delete_min(root)->key);
+	// fibheap_print(root->min);
 
 	return 0;
 }

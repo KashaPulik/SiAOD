@@ -1,4 +1,4 @@
-#include <fibheap.h>
+#include "fibheap.h"
 #include <math.h>
 
 fibheap* make_fibheap()
@@ -92,13 +92,19 @@ fibheap_node* fibheap_delete_min(fibheap* heap)
     if (z == NULL)
         return NULL;
 
-    fibheap_node* x = z->child;
-    while (x) {
-        fibheap_add_node_to_root_list(x, heap->min);
-        x->parent = NULL;
-        if (x->left == x)
-            break;
-        x = x->left;
+    if (z->child) {
+        fibheap_node* x = z->child;
+        int n = 1;
+        x = x->right;
+        while (x != z->child) {
+            x = x->right;
+            n++;
+        }
+        for (int i = 0; i < n; i++) {
+            fibheap_add_node_to_root_list(x, heap->min);
+            x->parent = NULL;
+            x = x->left;
+        }
     }
 
     fibheap_remove_node_from_root_list(z);
@@ -111,6 +117,8 @@ fibheap_node* fibheap_delete_min(fibheap* heap)
     }
 
     heap->nnodes--;
+
+    // free(z);
 
     return z;
 }
@@ -248,26 +256,49 @@ void fibheap_delete_node(fibheap* heap, fibheap_node* x)
 
 void fibheap_delete_heap(fibheap* heap)
 {
-    fibheap_node* z = NULL;
-    while (heap->nnodes) {
-        z = fibheap_delete_min(heap);
-        free(z);
-    }
+    while (heap->nnodes)
+        fibheap_delete_min(heap);
+
     free(heap);
 }
 
-void fibheap_print(fibheap_node* n)
+void printFibonacciHeapRecursive(fibheap_node* node, int depth)
 {
-    fibheap_node* x;
-    for (x = n;; x = x->right) {
-        if (x->child == NULL) {
-            printf("node with no child (%d) \n", x->key);
-        } else {
-            printf("NODE(%d) with child (%d)\n", x->key, x->child->key);
-            fibheap_print(x->child);
-        }
-        if (x->right == n) {
-            break;
-        }
+    if (node == NULL) {
+        return;
     }
+
+    printf("%d", node->key);
+    if (node->parent != NULL) {
+        printf(" (Parent: %d)", node->parent->key);
+    }
+    printf("\n");
+
+    fibheap_node* child = node->child;
+    if (child != NULL) {
+        printf("  Children of %d:\n", node->key);
+        do {
+            for (int i = 0; i < depth; i++) {
+                printf("  ");
+            }
+            printFibonacciHeapRecursive(child, depth + 1);
+            child = child->right;
+        } while (child != node->child);
+    }
+}
+
+// Функция для вывода всей Фибоначчиевой кучи
+void fibheap_print(fibheap_node* min)
+{
+    if (min == NULL) {
+        printf("The Fibonacci heap is empty.\n");
+        return;
+    }
+
+    printf("Fibonacci Heap with Parent-Child Relationships:\n");
+    fibheap_node* current = min;
+    do {
+        printFibonacciHeapRecursive(current, 0);
+        current = current->right;
+    } while (current != min);
 }
