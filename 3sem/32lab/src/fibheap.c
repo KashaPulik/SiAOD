@@ -24,7 +24,7 @@ typedef struct fibheap {
 } fibheap;
 
 fibheap* make_fibheap();
-void fibheap_insert(fibheap* H, fibheap_node* new, int val);
+void fibheap_insert(fibheap* H, fibheap_node* node, int val);
 fibheap_node* fibheap_delete_min(fibheap* H);
 void fibheap_consolidate(fibheap* H);
 void fibheap_link(fibheap* H, fibheap_node* y, fibheap_node* x);
@@ -63,26 +63,26 @@ void print_heap(fibheap_node* n)
 }
 
 // Inserting fibheap_nodes
-void fibheap_insert(fibheap* H, fibheap_node* new, int val)
+void fibheap_insert(fibheap* H, fibheap_node* node, int val)
 {
-    new = (fibheap_node*)malloc(sizeof(fibheap_node));
-    new->key = val;
-    new->degree = 0;
-    new->mark = false;
-    new->parent = NULL;
-    new->child = NULL;
-    new->visited = false;
-    new->left = new;
-    new->right = new;
+    node = (fibheap_node*)malloc(sizeof(fibheap_node));
+    node->key = val;
+    node->degree = 0;
+    node->mark = false;
+    node->parent = NULL;
+    node->child = NULL;
+    node->visited = false;
+    node->left = node;
+    node->right = node;
     if (H->min == NULL) {
-        H->min = new;
+        H->min = node;
     } else {
-        H->min->left->right = new;
-        new->right = H->min;
-        new->left = H->min->left;
-        H->min->left = new;
-        if (new->key < H->min->key) {
-            H->min = new;
+        H->min->left->right = node;
+        node->right = H->min;
+        node->left = H->min->left;
+        H->min->left = node;
+        if (node->key < H->min->key) {
+            H->min = node;
         }
     }
     (H->n)++;
@@ -99,25 +99,25 @@ fibheap_node* fibheap_min(fibheap* H)
 }
 
 // Union operation
-fibheap* fibheap_union(fibheap* H1, fibheap* H2)
+fibheap* fibheap_union(fibheap* heap1, fibheap* heap2)
 {
-    fibheap* Hnew;
-    Hnew = make_fibheap();
-    Hnew->min = H1->min;
+    fibheap* heap;
+    heap = make_fibheap();
+    heap->min = heap1->min;
 
     fibheap_node *temp1, *temp2;
-    temp1 = Hnew->min->right;
-    temp2 = H2->min->left;
+    temp1 = heap->min->right;
+    temp2 = heap2->min->left;
 
-    Hnew->min->right->left = H2->min->left;
-    Hnew->min->right = H2->min;
-    H2->min->left = Hnew->min;
+    heap->min->right->left = heap2->min->left;
+    heap->min->right = heap2->min;
+    heap2->min->left = heap->min;
     temp2->right = temp1;
 
-    if ((H1->min == NULL) || (H2->min != NULL && H2->min->key < H1->min->key))
-        Hnew->min = H2->min;
-    Hnew->n = H1->n + H2->n;
-    return Hnew;
+    if ((heap1->min == NULL) || (heap2->min != NULL && heap2->min->key < heap1->min->key))
+        heap->min = heap2->min;
+    heap->n = heap1->n + heap2->n;
+    return heap;
 }
 
 // Calculate the degree
@@ -220,14 +220,14 @@ fibheap_node* fibheap_delete_min(fibheap* H)
     if (H->min == NULL)
         printf("\n The heap is empty");
     else {
-        fibheap_node* temp = H->min;
-        fibheap_node* pntr;
-        pntr = temp;
+        fibheap_node* z = H->min;
+        fibheap_node* w;
+        w = z;
         fibheap_node* x = NULL;
-        if (temp->child != NULL) {
-            x = temp->child;
+        if (z->child != NULL) {
+            x = z->child;
             do {
-                pntr = x->right;
+                w = x->right;
                 (H->min->left)->right = x;
                 x->right = H->min;
                 x->left = H->min->left;
@@ -235,22 +235,22 @@ fibheap_node* fibheap_delete_min(fibheap* H)
                 if (x->key < H->min->key)
                     H->min = x;
                 x->parent = NULL;
-                x = pntr;
-            } while (pntr != temp->child);
+                x = w;
+            } while (w != z->child);
         }
 
-        (temp->left)->right = temp->right;
-        (temp->right)->left = temp->left;
-        H->min = temp->right;
+        (z->left)->right = z->right;
+        (z->right)->left = z->left;
+        H->min = z->right;
 
-        if (temp == temp->right && temp->child == NULL)
+        if (z == z->right && z->child == NULL)
             H->min = NULL;
         else {
-            H->min = temp->right;
+            H->min = z->right;
             fibheap_consolidate(H);
         }
         H->n = H->n - 1;
-        return temp;
+        return z;
     }
     return H->min;
 }
@@ -293,7 +293,7 @@ void fibheap_cascading_cut(fibheap* H, fibheap_node* parentfibheap_fibheap_node)
     }
 }
 
-void fibheap_decrease_key(fibheap* H, fibheap_node* fibheap_node_to_be_decrease, int new_key)
+void fibheap_decrease_key(fibheap* H, fibheap_node* fibheap_node_to_be_decrease, int node_key)
 {
     fibheap_node* parentfibheap_fibheap_node;
     if (H == NULL) {
@@ -305,10 +305,10 @@ void fibheap_decrease_key(fibheap* H, fibheap_node* fibheap_node_to_be_decrease,
     }
 
     else {
-        if (fibheap_node_to_be_decrease->key < new_key) {
-            printf("\n Invalid new key for decrease key operation \n ");
+        if (fibheap_node_to_be_decrease->key < node_key) {
+            printf("\n Invalid node key for decrease key operation \n ");
         } else {
-            fibheap_node_to_be_decrease->key = new_key;
+            fibheap_node_to_be_decrease->key = node_key;
             parentfibheap_fibheap_node = fibheap_node_to_be_decrease->parent;
             if ((parentfibheap_fibheap_node != NULL)
                 && (fibheap_node_to_be_decrease->key < parentfibheap_fibheap_node->key)) {
@@ -324,7 +324,7 @@ void fibheap_decrease_key(fibheap* H, fibheap_node* fibheap_node_to_be_decrease,
     }
 }
 
-void findfibheap_fibheap_node(fibheap* H, fibheap_node* n, int key, int new_key)
+void findfibheap_fibheap_node(fibheap* H, fibheap_node* n, int key, int node_key)
 {
     fibheap_node* find_use = n;
     fibheap_node* f = NULL;
@@ -332,13 +332,13 @@ void findfibheap_fibheap_node(fibheap* H, fibheap_node* n, int key, int new_key)
     if (find_use->key == key) {
         find_use->visited = false;
         f = find_use;
-        fibheap_decrease_key(H, f, new_key);
+        fibheap_decrease_key(H, f, node_key);
     }
     if (find_use->child != NULL) {
-        findfibheap_fibheap_node(H, find_use->child, key, new_key);
+        findfibheap_fibheap_node(H, find_use->child, key, node_key);
     }
     if ((find_use->right->visited != true)) {
-        findfibheap_fibheap_node(H, find_use->right, key, new_key);
+        findfibheap_fibheap_node(H, find_use->right, key, node_key);
     }
 
     find_use->visited = false;
@@ -348,7 +348,7 @@ fibheap* fibheap_insert_procedure()
 {
     fibheap* temp;
     int no_offibheap_fibheap_nodes, ele, i;
-    fibheap_node* newfibheap_fibheap_node = NULL;
+    fibheap_node* nodefibheap_fibheap_node = NULL;
     temp = (fibheap*)malloc(sizeof(fibheap));
     temp = NULL;
     if (temp == NULL) {
@@ -359,7 +359,7 @@ fibheap* fibheap_insert_procedure()
     for (i = 1; i <= no_offibheap_fibheap_nodes; i++) {
         printf("\n fibheap_node %d and its key value = ", i);
         scanf("%d", &ele);
-        fibheap_insert(temp, newfibheap_fibheap_node, ele);
+        fibheap_insert(temp, nodefibheap_fibheap_node, ele);
     }
     return temp;
 }
@@ -376,9 +376,9 @@ void Deletefibheap_fibheap_node(fibheap* H, int dec_key)
 
 int main()
 {
-    fibheap_node *newfibheap_fibheap_node = NULL, *minfibheap_fibheap_node, *extracted_min, *find_use;
-    fibheap *heap, *h1;
-    int operation_no, new_key, dec_key, ele, i, no_offibheap_fibheap_nodes;
+    fibheap_node *nodefibheap_fibheap_node = NULL, *minfibheap_fibheap_node, *extracted_min, *find_use;
+    fibheap *heap, *heap1;
+    int operation_no, node_key, dec_key, ele, i, no_offibheap_fibheap_nodes;
     heap = (fibheap*)malloc(sizeof(fibheap));
     heap = NULL;
     while (1) {
@@ -402,7 +402,7 @@ int main()
             for (i = 1; i <= no_offibheap_fibheap_nodes; i++) {
                 printf("\n fibheap_node %d and its key value = ", i);
                 scanf("%d", &ele);
-                fibheap_insert(heap, newfibheap_fibheap_node, ele);
+                fibheap_insert(heap, nodefibheap_fibheap_node, ele);
             }
             break;
 
@@ -419,8 +419,8 @@ int main()
                 printf("\n no FIbonacci heap created \n ");
                 break;
             }
-            h1 = fibheap_insert_procedure();
-            heap = fibheap_union(heap, h1);
+            heap1 = fibheap_insert_procedure();
+            heap = fibheap_union(heap, heap1);
             printf("Unified Heap:\n");
             print_heap(heap->min);
             break;
@@ -442,10 +442,10 @@ int main()
             else {
                 printf(" \n fibheap_node to be decreased = ");
                 scanf("%d", &dec_key);
-                printf(" \n enter the new key = ");
-                scanf("%d", &new_key);
+                printf(" \n enter the node key = ");
+                scanf("%d", &node_key);
                 find_use = heap->min;
-                findfibheap_fibheap_node(heap, find_use, dec_key, new_key);
+                findfibheap_fibheap_node(heap, find_use, dec_key, node_key);
                 printf("\n Key decreased- Corresponding heap:\n");
                 print_heap(heap->min);
             }
@@ -467,7 +467,7 @@ int main()
             break;
 
         case 9:
-            free(newfibheap_fibheap_node);
+            free(nodefibheap_fibheap_node);
             free(heap);
             exit(0);
 
