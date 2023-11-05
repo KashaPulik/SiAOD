@@ -5,9 +5,20 @@ int main()
 {
     tst* tree = NULL;
     tree = tst_insert(tree, "aboba");
-    tst_print_one_word(tree);
     tree = tst_insert(tree, "babka");
-    tst_print_one_word(tree->hikid);
     tree = tst_insert(tree, "abobab");
-    tst_print_one_word(tree);
+    tree = tst_insert(tree, "pisa");
+    tree = tst_insert(tree, "popa");
+    tree = tst_insert(tree, "kisa");
+    tree = tst_insert(tree, "pusia");
+    tree = tst_insert(tree, "ya");
+    tree = tst_insert(tree, "lublu");
+    tree = tst_insert(tree, "kakat");
+    tree = tst_insert(tree, "i");
+    tree = tst_insert(tree, "pafu");
+    tree = tst_insert(tree, "i");
+    tree = tst_insert(tree, "lublu");
+    tree = tst_insert(tree, "kushat");
+    tree = tst_insert(tree, "mau");
+    printTernaryTree(tree, 0, "a");
 }

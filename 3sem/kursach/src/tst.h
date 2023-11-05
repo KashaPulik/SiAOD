@@ -1,6 +1,9 @@
 #include <stdbool.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+enum { NONE = -1, LO, HI, EQ };
 
 typedef struct tst {
     struct tst* lokid;
@@ -10,6 +13,11 @@ typedef struct tst {
     bool end;
 } tst;
 
+extern int max_dict_size;
+extern int max_word_len;
+
 tst* create_node(char ch);
 tst* tst_insert(tst* tree, char* key);
 void tst_print_one_word(tst* node);
+void tst_print_all_words(tst* tree);
+void printTernaryTree(tst* root, int depth, char* branch);
