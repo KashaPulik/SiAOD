@@ -1,48 +1,80 @@
-#include <stdlib.h>
-#include <stdbool.h>
-
-typedef struct tst {
-    struct tst *lokid;
-    struct tst *eqkid;
-    struct tst *hikid;
-    char ch;
-    bool end;
-} tst;
+#include "tst.h"
 
 tst* create_node(char ch)
 {
-    tst *node = NULL;
-    if(!(node = malloc(sizeof(node))))
+    tst* node = malloc(sizeof(tst));
+    if (!node)
         return NULL;
     node->lokid = NULL;
     node->eqkid = NULL;
     node->hikid = NULL;
     node->ch = ch;
-    node->end = 0;
+    node->end = false;
     return node;
 }
 
 tst* tst_insert(tst* tree, char* key)
 {
-    tst* node = tree;
-    while(node != NULL)
-    {
-        if(*key < node->ch) {
+    tst *node = tree, *prev = NULL;
+    int indicator = -1;
+    while (node != NULL) {
+        if (*key < node->ch) {
+            indicator = 0;
+            prev = node;
             node = node->lokid;
-            continue;
-        }
-        if(*key > node->ch) {
+        } else if (*key > node->ch) {
+            indicator = 1;
+            prev = node;
             node = node->hikid;
-            continue;
-        }
-        if(*key == node->ch) {
+        } else {
+            indicator = 2;
+            prev = node;
             node = node->eqkid;
             key++;
-            continue;
         }
     }
-    for(;*key != '\n'; key++)
-    {
-        
+
+    node = create_node(*key);
+
+    if (tree == NULL)
+        tree = node;
+
+    switch (indicator) {
+    case -1:
+        break;
+    case 0:
+        prev->lokid = node;
+        break;
+    case 1:
+        prev->hikid = node;
+        break;
+    case 2:
+        prev->eqkid = node;
+        break;
     }
+
+    prev = node;
+    key++;
+
+    while (*key != '\0') {
+        node = create_node(*key);
+        key++;
+        prev->eqkid = node;
+        prev = node;
+    }
+    node->end = true;
+
+    return tree;
+}
+
+void tst_print_one_word(tst* node)
+{
+    while (node != NULL) {
+        printf("%c", node->ch);
+        node = node->eqkid;
+        if(node == NULL)
+            break;
+    }
+    printf("%c", node->ch);
+    printf("\n");
 }

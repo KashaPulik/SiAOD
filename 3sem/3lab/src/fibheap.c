@@ -66,19 +66,19 @@ void fibheap_link_lists(fibheap_node* heap1, fibheap_node* heap2)
 {
     if (heap1 == NULL || heap2 == NULL)
         return;
-    fibheap_node* temp1 = heap1->right;
-    fibheap_node* temp2 = heap2->left;
-    heap1->right->left = heap2->left;
-    heap1->right = heap2;
-    heap2->left = heap1;
-    temp2->right = temp1;
+    fibheap_node* left1 = heap1->left;
+    fibheap_node* left2 = heap2->left;
+    left1->right = heap2;
+    heap2->left = left1;
+    heap1->left = left2;
+    left2->right = heap1;
 }
 
-fibheap_node* fibheap_delete_min(fibheap* heap)
+void fibheap_delete_min(fibheap* heap)
 {
     fibheap_node *z = heap->min, *x = NULL, *w = heap->min;
     if (z == NULL)
-        return NULL;
+        return;
     if (z->child != NULL) {
         x = z->child;
         do {
@@ -100,7 +100,7 @@ fibheap_node* fibheap_delete_min(fibheap* heap)
         fibheap_consolidate(heap);
     }
     heap->nnodes--;
-    return z;
+    free(z);
 }
 
 void fibheap_consolidate(fibheap* heap)

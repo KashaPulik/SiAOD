@@ -27,7 +27,7 @@ void fibheap_add_node_to_root_list(fibheap_node* node, fibheap_node* h);
 void fibheap_remove_node_from_root_list(fibheap_node* z);
 fibheap* fibheap_union(fibheap* heap1, fibheap* heap2);
 void fibheap_link_lists(fibheap_node* heap1, fibheap_node* heap2);
-fibheap_node* fibheap_delete_min(fibheap* heap);
+void fibheap_delete_min(fibheap* heap);
 void fibheap_consolidate(fibheap* heap);
 int D(int n);
 void fibheap_swap(fibheap_node** x, fibheap_node** y);
