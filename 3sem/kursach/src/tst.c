@@ -91,6 +91,92 @@ tst* tst_insert(tst* tree, char* key)
     return tree;
 }
 
+// void tst_delete_key_from_start(tst* node, tst* prev, int indicator, char*
+// key)
+// {
+//     if (*(key + 1) == '\0' && node->end) {
+//         if (!node->eqkid && !node->hikid && !node->lokid) {
+//             free(node);
+//             *key = '\0';
+//         }
+//     }
+//     if (node->eqkid->ch == *(key + 1))
+// }
+
+void tst_delete(tst* tree, char* key)
+{
+    if (tree == NULL)
+        return;
+    tst *node = tree, *prev = NULL;
+    int indicator = NONE;
+    while (node->ch != *key) {
+        if (*key > node->ch) {
+            if (node->hikid) {
+                indicator = HI;
+                prev = node;
+                node = node->hikid;
+            } else {
+                return;
+            }
+        } else if (*key < node->ch) {
+            if (node->lokid) {
+                indicator = LO;
+                prev = node;
+                node = node->lokid;
+            } else {
+                return;
+            }
+        }
+    }
+    tst* key_trace[max_word_len];
+    int indicators[max_word_len];
+    for (int i = 0; i < max_word_len; i++) {
+        key_trace[i] = node;
+        indicators[i] = indicator;
+        if (key[i + 1] == '\0') {
+            if (node->end)
+                break;
+            else
+                return;
+        }
+        if (node->eqkid)
+            if (key[i + 1] == node->eqkid->ch) {
+                node = node->eqkid;
+                indicator = EQ;
+                continue;
+            }
+        if (node->hikid)
+            if (key[i + 1] == node->hikid->ch) {
+                node = node->hikid;
+                indicator = HI;
+                continue;
+            }
+        if (node->lokid)
+            if (key[i + 1] == node->lokid->ch) {
+                node = node->lokid;
+                indicator = LO;
+                continue;
+            }
+        return;
+    }
+    int last_sym = strlen(key) - 1;
+    node->end = false;
+    while(!node->eqkid && !node->hikid && !node->lokid && !node->end) {
+        free(node);
+        last_sym--;
+        node = key_trace[last_sym];
+    }
+    if(node->hikid) {
+        node->eqkid = node->hikid;
+        node->hikid = NULL;
+        return;
+    }
+    if(node->lokid) {
+        node->eqkid = node->lokid;
+        node->lokid = NULL;
+    }
+}
+
 void tst_print_words_from_start(tst* node, char* word)
 {
     char word_copy[max_word_len];
