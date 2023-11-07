@@ -24,17 +24,20 @@ tst* tst_insert(tst* tree, char* key)
     // Индикатор хранит в себе информацию о последнем шаге от родительского узла
     // к дочернему
     int indicator = NONE;
+    int flag = 1;
     // В цикле происходит поиск места, с которого следует начать вставку ключа
     while (node != NULL) {
         // Если символ из ключа ближе к началу алфавита, чем тот, что уже есть в
         // дереве, то он ставится слева от существующего узла
         if (*key < node->ch) {
+            flag = 1;
             indicator = LO;
             prev = node;
             node = node->lokid;
             // Если символ из ключа дальше от начала алфавита, чем тот, что уже
             // есть в дереве, то он ставится справа от существующего узла
         } else if (*key > node->ch) {
+            flag = 1;
             indicator = HI;
             prev = node;
             node = node->hikid;
@@ -43,6 +46,17 @@ tst* tst_insert(tst* tree, char* key)
             // символы, поэтому наблюдение переходит к следующему символу, а
             // указатель перемещается вниз по центру
         } else {
+            if (flag) {
+                if (node->eqkid) {
+                    if (node->eqkid->ch != *(key + 1)) {
+                        indicator = HI;
+                        prev = node;
+                        node = node->hikid;
+                        continue;
+                    }
+                }
+            }
+            flag = 0;
             indicator = EQ;
             prev = node;
             node = node->eqkid;
@@ -198,52 +212,52 @@ tst* tst_delete(tst* tree, char* key)
         return NULL;
     }
     switch (indicator) {
-        case LO:
-            if (node->hikid) {
-                prev->lokid = node->hikid;
-                tst* lo_node = NULL;
-                if (node->lokid)
-                    lo_node = node->lokid;
-                else {
-                    free(node);
-                    return tree;
-                }
-                tst* hi_node = node->hikid;
-                while (hi_node->lokid)
-                    hi_node = hi_node->lokid;
-                hi_node->lokid = lo_node;
+    case LO:
+        if (node->hikid) {
+            prev->lokid = node->hikid;
+            tst* lo_node = NULL;
+            if (node->lokid)
+                lo_node = node->lokid;
+            else {
                 free(node);
                 return tree;
             }
-            if (node->lokid) {
-                prev->lokid = node->lokid;
+            tst* hi_node = node->hikid;
+            while (hi_node->lokid)
+                hi_node = hi_node->lokid;
+            hi_node->lokid = lo_node;
+            free(node);
+            return tree;
+        }
+        if (node->lokid) {
+            prev->lokid = node->lokid;
+            free(node);
+            return tree;
+        }
+        break;
+    case HI:
+        if (node->hikid) {
+            prev->hikid = node->hikid;
+            tst* lo_node = NULL;
+            if (node->lokid)
+                lo_node = node->lokid;
+            else {
                 free(node);
                 return tree;
             }
-            break;
-        case HI:
-            if (node->hikid) {
-                prev->hikid = node->hikid;
-                tst* lo_node = NULL;
-                if (node->lokid)
-                    lo_node = node->lokid;
-                else {
-                    free(node);
-                    return tree;
-                }
-                tst* hi_node = node->hikid;
-                while (hi_node->lokid)
-                    hi_node = hi_node->lokid;
-                hi_node->lokid = lo_node;
-                free(node);
-                return tree;
-            }
-            if (node->lokid) {
-                prev->hikid = node->lokid;
-                free(node);
-                return tree;
-            }
-            break;
+            tst* hi_node = node->hikid;
+            while (hi_node->lokid)
+                hi_node = hi_node->lokid;
+            hi_node->lokid = lo_node;
+            free(node);
+            return tree;
+        }
+        if (node->lokid) {
+            prev->hikid = node->lokid;
+            free(node);
+            return tree;
+        }
+        break;
     }
     free(node);
     return NULL;

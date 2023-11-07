@@ -9,7 +9,6 @@ int main()
     tree = tst_insert(tree, "abobab");
     tree = tst_insert(tree, "pisa");
     tree = tst_insert(tree, "popa");
-    printf("%c\n", tree->hikid->hikid->eqkid->ch);
     tree = tst_insert(tree, "kisa");
     tree = tst_insert(tree, "pusia");
     tree = tst_insert(tree, "ya");
