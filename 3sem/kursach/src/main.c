@@ -9,6 +9,7 @@ int main()
     tree = tst_insert(tree, "abobab");
     tree = tst_insert(tree, "pisa");
     tree = tst_insert(tree, "popa");
+    printf("%c\n", tree->hikid->hikid->eqkid->ch);
     tree = tst_insert(tree, "kisa");
     tree = tst_insert(tree, "pusia");
     tree = tst_insert(tree, "ya");
@@ -20,5 +21,5 @@ int main()
     tree = tst_insert(tree, "lublu");
     tree = tst_insert(tree, "kushat");
     tree = tst_insert(tree, "mau");
-    printTernaryTree(tree, 0, "a");
+    tst_print_all_words(tree);
 }

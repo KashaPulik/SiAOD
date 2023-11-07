@@ -103,10 +103,10 @@ tst* tst_insert(tst* tree, char* key)
 //     if (node->eqkid->ch == *(key + 1))
 // }
 
-void tst_delete(tst* tree, char* key)
+tst* tst_delete(tst* tree, char* key)
 {
     if (tree == NULL)
-        return;
+        return NULL;
     tst *node = tree, *prev = NULL;
     int indicator = NONE;
     while (node->ch != *key) {
@@ -116,7 +116,7 @@ void tst_delete(tst* tree, char* key)
                 prev = node;
                 node = node->hikid;
             } else {
-                return;
+                return tree;
             }
         } else if (*key < node->ch) {
             if (node->lokid) {
@@ -124,57 +124,129 @@ void tst_delete(tst* tree, char* key)
                 prev = node;
                 node = node->lokid;
             } else {
-                return;
+                return tree;
             }
         }
     }
     tst* key_trace[max_word_len];
-    int indicators[max_word_len];
     for (int i = 0; i < max_word_len; i++) {
         key_trace[i] = node;
-        indicators[i] = indicator;
         if (key[i + 1] == '\0') {
             if (node->end)
                 break;
             else
-                return;
+                return tree;
         }
         if (node->eqkid)
             if (key[i + 1] == node->eqkid->ch) {
                 node = node->eqkid;
-                indicator = EQ;
                 continue;
             }
         if (node->hikid)
             if (key[i + 1] == node->hikid->ch) {
                 node = node->hikid;
-                indicator = HI;
                 continue;
             }
         if (node->lokid)
             if (key[i + 1] == node->lokid->ch) {
                 node = node->lokid;
-                indicator = LO;
                 continue;
             }
-        return;
+        return tree;
     }
     int last_sym = strlen(key) - 1;
     node->end = false;
-    while(!node->eqkid && !node->hikid && !node->lokid && !node->end) {
+    while (!node->eqkid && !node->hikid && !node->lokid && !node->end
+           && last_sym) {
         free(node);
         last_sym--;
         node = key_trace[last_sym];
     }
-    if(node->hikid) {
-        node->eqkid = node->hikid;
-        node->hikid = NULL;
-        return;
+    if (node->end || last_sym) {
+        if (node->hikid) {
+            node->eqkid = node->hikid;
+            node->hikid = NULL;
+        } else if (node->lokid) {
+            node->eqkid = node->lokid;
+            node->lokid = NULL;
+        }
+        return tree;
     }
-    if(node->lokid) {
-        node->eqkid = node->lokid;
-        node->lokid = NULL;
+    if (prev == NULL) {
+        if (node->hikid) {
+            tree = node->hikid;
+            tst* lo_node = NULL;
+            if (node->lokid)
+                lo_node = node->lokid;
+            else {
+                free(node);
+                return tree;
+            }
+            tst* hi_node = tree;
+            while (hi_node->lokid)
+                hi_node = hi_node->lokid;
+            hi_node->lokid = lo_node;
+            free(node);
+            return tree;
+        }
+        if (node->lokid) {
+            tree = node->lokid;
+            free(node);
+            return tree;
+        }
+        free(node);
+        return NULL;
     }
+    switch (indicator) {
+        case LO:
+            if (node->hikid) {
+                prev->lokid = node->hikid;
+                tst* lo_node = NULL;
+                if (node->lokid)
+                    lo_node = node->lokid;
+                else {
+                    free(node);
+                    return tree;
+                }
+                tst* hi_node = node->hikid;
+                while (hi_node->lokid)
+                    hi_node = hi_node->lokid;
+                hi_node->lokid = lo_node;
+                free(node);
+                return tree;
+            }
+            if (node->lokid) {
+                prev->lokid = node->lokid;
+                free(node);
+                return tree;
+            }
+            break;
+        case HI:
+            if (node->hikid) {
+                prev->hikid = node->hikid;
+                tst* lo_node = NULL;
+                if (node->lokid)
+                    lo_node = node->lokid;
+                else {
+                    free(node);
+                    return tree;
+                }
+                tst* hi_node = node->hikid;
+                while (hi_node->lokid)
+                    hi_node = hi_node->lokid;
+                hi_node->lokid = lo_node;
+                free(node);
+                return tree;
+            }
+            if (node->lokid) {
+                prev->hikid = node->lokid;
+                free(node);
+                return tree;
+            }
+            break;
+    }
+    free(node);
+    return NULL;
 }
 
 void tst_print_words_from_start(tst* node, char* word)
@@ -187,15 +259,15 @@ void tst_print_words_from_start(tst* node, char* word)
         printf("%s\n", word_copy);
     if (node->eqkid) {
         tst_print_words_from_start(node->eqkid, word_copy);
-        word_copy[strlen(word)] = '\0';
+        // word_copy[strlen(word)] = '\0';
     }
     if (node->lokid) {
         tst_print_words_from_start(node->lokid, word_copy);
-        word_copy[strlen(word)] = '\0';
+        // word_copy[strlen(word)] = '\0';
     }
     if (node->hikid) {
         tst_print_words_from_start(node->hikid, word_copy);
-        word_copy[strlen(word)] = '\0';
+        // word_copy[strlen(word)] = '\0';
     }
 }
 
@@ -224,26 +296,4 @@ void tst_print_one_word(tst* node)
     }
     printf("%c", node->ch);
     printf("\n");
-}
-
-void printTernaryTree(tst* root, int depth, char* branch)
-{
-    if (root == NULL) {
-        return;
-    }
-
-    // Рекурсивно вызываем функцию для правого узла
-    printTernaryTree(root->hikid, depth + 1, "r");
-
-    // Выводим узел и ветви с соответствующим отступом
-    for (int i = 0; i < depth; i++) {
-        printf("   ");
-    }
-    printf("|--%c\n", root->ch);
-
-    // Рекурсивно вызываем функцию для среднего узла
-    printTernaryTree(root->eqkid, depth + 1, "m");
-
-    // Рекурсивно вызываем функцию для левого узла
-    printTernaryTree(root->lokid, depth + 1, "l");
 }
