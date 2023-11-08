@@ -16,6 +16,7 @@ int main()
     tree = tst_insert(tree, "kakat");
     tree = tst_insert(tree, "i");
     tree = tst_insert(tree, "pafu");
+    // printf("%c\n", tree->hikid->hikid->lokid->lokid->ch);
     tree = tst_insert(tree, "i");
     tree = tst_insert(tree, "lublu");
     tree = tst_insert(tree, "kushat");

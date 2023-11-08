@@ -63,6 +63,8 @@ tst* tst_insert(tst* tree, char* key)
             key++;
         }
     }
+    if(*key == '\0')
+        return tree;
     // Под новый узел выделяется память
     node = create_node(*key);
     // Если корня дерева не существует, то новый узел становится корнем
@@ -263,36 +265,35 @@ tst* tst_delete(tst* tree, char* key)
     return NULL;
 }
 
-void tst_print_words_from_start(tst* node, char* word)
+void tst_print_words_from_start(tst* node, char* word, int indicator)
 {
     char word_copy[max_word_len];
     strcpy(word_copy, word);
+    if (indicator == LO || indicator == HI)
+        word_copy[strlen(word_copy) - 1] = '\0';
     char symbol[2] = {node->ch, '\0'};
     strcat(word_copy, symbol);
     if (node->end)
         printf("%s\n", word_copy);
-    if (node->eqkid) {
-        tst_print_words_from_start(node->eqkid, word_copy);
-        // word_copy[strlen(word)] = '\0';
-    }
-    if (node->lokid) {
-        tst_print_words_from_start(node->lokid, word_copy);
-        // word_copy[strlen(word)] = '\0';
-    }
-    if (node->hikid) {
-        tst_print_words_from_start(node->hikid, word_copy);
-        // word_copy[strlen(word)] = '\0';
-    }
+    if (node->eqkid)
+        tst_print_words_from_start(node->eqkid, word_copy, EQ);
+    if (node->lokid)
+        tst_print_words_from_start(node->lokid, word_copy, LO);
+    if (node->hikid)
+        tst_print_words_from_start(node->hikid, word_copy, HI);
 }
 
 void tst_print_all_words(tst* tree)
 {
-    if (tree->eqkid) {
+    if (tree) {
         char word[max_word_len];
         word[0] = '\0';
         char symbol[2] = {tree->ch, '\0'};
         strcat(word, symbol);
-        tst_print_words_from_start(tree->eqkid, word);
+        if(tree->end)
+            printf("%s\n", word);
+        if (tree->eqkid)
+            tst_print_words_from_start(tree->eqkid, word, EQ);
     }
     if (tree->lokid)
         tst_print_all_words(tree->lokid);
