@@ -16,10 +16,11 @@ int main()
     tree = tst_insert(tree, "kakat");
     tree = tst_insert(tree, "i");
     tree = tst_insert(tree, "pafu");
-    // printf("%c\n", tree->hikid->hikid->lokid->lokid->ch);
     tree = tst_insert(tree, "i");
     tree = tst_insert(tree, "lublu");
     tree = tst_insert(tree, "kushat");
     tree = tst_insert(tree, "mau");
+    // printf("%c\n", tree->hikid->hikid->lokid->hikid->hikid->ch);
+    tree = tst_delete(tree, "popa");
     tst_print_all_words(tree);
 }

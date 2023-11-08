@@ -63,7 +63,7 @@ tst* tst_insert(tst* tree, char* key)
             key++;
         }
     }
-    if(*key == '\0')
+    if (*key == '\0')
         return tree;
     // Под новый узел выделяется память
     node = create_node(*key);
@@ -145,8 +145,10 @@ tst* tst_delete(tst* tree, char* key)
         }
     }
     tst* key_trace[max_word_len];
+    int indicators[max_word_len];
     for (int i = 0; i < max_word_len; i++) {
         key_trace[i] = node;
+        indicators[i] = indicator;
         if (key[i + 1] == '\0') {
             if (node->end)
                 break;
@@ -156,16 +158,19 @@ tst* tst_delete(tst* tree, char* key)
         if (node->eqkid)
             if (key[i + 1] == node->eqkid->ch) {
                 node = node->eqkid;
+                indicator = EQ;
                 continue;
             }
         if (node->hikid)
             if (key[i + 1] == node->hikid->ch) {
                 node = node->hikid;
+                indicator = HI;
                 continue;
             }
         if (node->lokid)
             if (key[i + 1] == node->lokid->ch) {
                 node = node->lokid;
+                indicator = LO;
                 continue;
             }
         return tree;
@@ -177,6 +182,17 @@ tst* tst_delete(tst* tree, char* key)
         free(node);
         last_sym--;
         node = key_trace[last_sym];
+        switch (indicators[last_sym + 1]) {
+        case EQ:
+            node->eqkid = NULL;
+            break;
+        case HI:
+            node->hikid = NULL;
+            break;
+        case LO:
+            node->lokid = NULL;
+            break;
+        }
     }
     if (node->end || last_sym) {
         if (node->hikid) {
@@ -213,7 +229,7 @@ tst* tst_delete(tst* tree, char* key)
         free(node);
         return NULL;
     }
-    switch (indicator) {
+    switch (indicators[0]) {
     case LO:
         if (node->hikid) {
             prev->lokid = node->hikid;
@@ -236,6 +252,9 @@ tst* tst_delete(tst* tree, char* key)
             free(node);
             return tree;
         }
+        prev->lokid = NULL;
+        free(node);
+        return tree;
         break;
     case HI:
         if (node->hikid) {
@@ -259,6 +278,9 @@ tst* tst_delete(tst* tree, char* key)
             free(node);
             return tree;
         }
+        prev->hikid = NULL;
+        free(node);
+        return tree;
         break;
     }
     free(node);
@@ -290,7 +312,7 @@ void tst_print_all_words(tst* tree)
         word[0] = '\0';
         char symbol[2] = {tree->ch, '\0'};
         strcat(word, symbol);
-        if(tree->end)
+        if (tree->end)
             printf("%s\n", word);
         if (tree->eqkid)
             tst_print_words_from_start(tree->eqkid, word, EQ);
