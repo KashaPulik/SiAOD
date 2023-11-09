@@ -24,20 +24,17 @@ tst* tst_insert(tst* tree, char* key)
     // Индикатор хранит в себе информацию о последнем шаге от родительского узла
     // к дочернему
     int indicator = NONE;
-    int flag = 1;
     // В цикле происходит поиск места, с которого следует начать вставку ключа
     while (node != NULL) {
         // Если символ из ключа ближе к началу алфавита, чем тот, что уже есть в
         // дереве, то он ставится слева от существующего узла
         if (*key < node->ch) {
-            flag = 1;
             indicator = LO;
             prev = node;
             node = node->lokid;
             // Если символ из ключа дальше от начала алфавита, чем тот, что уже
             // есть в дереве, то он ставится справа от существующего узла
         } else if (*key > node->ch) {
-            flag = 1;
             indicator = HI;
             prev = node;
             node = node->hikid;
@@ -46,17 +43,6 @@ tst* tst_insert(tst* tree, char* key)
             // символы, поэтому наблюдение переходит к следующему символу, а
             // указатель перемещается вниз по центру
         } else {
-            if (flag) {
-                if (node->eqkid) {
-                    if (node->eqkid->ch != *(key + 1)) {
-                        indicator = HI;
-                        prev = node;
-                        node = node->hikid;
-                        continue;
-                    }
-                }
-            }
-            flag = 0;
             indicator = EQ;
             prev = node;
             node = node->eqkid;
@@ -107,17 +93,22 @@ tst* tst_insert(tst* tree, char* key)
     return tree;
 }
 
-// void tst_delete_key_from_start(tst* node, tst* prev, int indicator, char*
-// key)
-// {
-//     if (*(key + 1) == '\0' && node->end) {
-//         if (!node->eqkid && !node->hikid && !node->lokid) {
-//             free(node);
-//             *key = '\0';
-//         }
-//     }
-//     if (node->eqkid->ch == *(key + 1))
-// }
+tst* find_next_sym(tst* node, char key)
+{
+    tst* tmp = node;
+    while(tmp->lokid) {
+        tmp = tmp->lokid;
+        if(tmp->ch == key)
+            return tmp;
+    }
+    tmp = node;
+    while (tmp->hikid) {
+        tmp = tmp->hikid;
+        if(tmp->ch == key)
+            return tmp;
+    }
+    return NULL;
+}
 
 tst* tst_delete(tst* tree, char* key)
 {
@@ -155,12 +146,19 @@ tst* tst_delete(tst* tree, char* key)
             else
                 return tree;
         }
-        if (node->eqkid)
+        if (node->eqkid) {
             if (key[i + 1] == node->eqkid->ch) {
                 node = node->eqkid;
                 indicator = EQ;
                 continue;
+            } else {
+                node = find_next_sym(node->eqkid, key[i + 1]);
+                if (node == NULL)
+                    return tree;
+                indicator = NONE;
+                continue;
             }
+        }
         if (node->hikid)
             if (key[i + 1] == node->hikid->ch) {
                 node = node->hikid;
