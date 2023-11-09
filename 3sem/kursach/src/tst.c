@@ -96,15 +96,15 @@ tst* tst_insert(tst* tree, char* key)
 tst* find_next_sym(tst* node, char key)
 {
     tst* tmp = node;
-    while(tmp->lokid) {
+    while (tmp->lokid) {
         tmp = tmp->lokid;
-        if(tmp->ch == key)
+        if (tmp->ch == key)
             return tmp;
     }
     tmp = node;
     while (tmp->hikid) {
         tmp = tmp->hikid;
-        if(tmp->ch == key)
+        if (tmp->ch == key)
             return tmp;
     }
     return NULL;
@@ -137,50 +137,79 @@ tst* tst_delete(tst* tree, char* key)
     }
     tst* key_trace[max_word_len];
     int indicators[max_word_len];
-    for (int i = 0; i < max_word_len; i++) {
+    bool key_is_part = 1;
+    int n_symbol = 0;
+    int i;
+    for (i = 0; i < max_word_len; i++) {
         key_trace[i] = node;
         indicators[i] = indicator;
-        if (key[i + 1] == '\0') {
+        key_is_part = node->ch == key[n_symbol] ? 1 : 0;
+        if (key_is_part)
+            n_symbol++;
+        else {
+            while (!key_is_part) {
+                if (key[n_symbol] > node->ch) {
+                    if (node->hikid) {
+                        node = node->hikid;
+                        indicator = HI;
+                        i++;
+                        key_trace[i] = node;
+                        indicators[i] = indicator;
+                        continue;
+                    } else {
+                        return tree;
+                    }
+                } else if (key[n_symbol] < node->ch) {
+                    if (node->lokid) {
+                        node = node->lokid;
+                        indicator = LO;
+                        i++;
+                        key_trace[i] = node;
+                        indicators[i] = indicator;
+                        continue;
+                    } else {
+                        return tree;
+                    }
+                }
+                n_symbol++;
+                key_is_part = true;
+            }
+        }
+        if (key[n_symbol] == '\0') {
             if (node->end)
                 break;
             else
                 return tree;
         }
         if (node->eqkid) {
-            if (key[i + 1] == node->eqkid->ch) {
-                node = node->eqkid;
-                indicator = EQ;
-                continue;
-            } else {
-                node = find_next_sym(node->eqkid, key[i + 1]);
-                if (node == NULL)
-                    return tree;
-                indicator = NONE;
-                continue;
-            }
+            node = node->eqkid;
+            indicator = EQ;
+            continue;
         }
-        if (node->hikid)
-            if (key[i + 1] == node->hikid->ch) {
-                node = node->hikid;
-                indicator = HI;
-                continue;
-            }
-        if (node->lokid)
-            if (key[i + 1] == node->lokid->ch) {
-                node = node->lokid;
-                indicator = LO;
-                continue;
-            }
+        // if (node->hikid)
+        //     if (key[i + 1] == node->hikid->ch) {
+        //         node = node->hikid;
+        //         indicator = HI;
+        //         continue;
+        //     }
+        // if (node->lokid)
+        //     if (key[i + 1] == node->lokid->ch) {
+        //         node = node->lokid;
+        //         indicator = LO;
+        //         continue;
+        //     }
         return tree;
     }
-    int last_sym = strlen(key) - 1;
+    int last_node = i;
+    int last_sym = n_symbol - 1;
     node->end = false;
     while (!node->eqkid && !node->hikid && !node->lokid && !node->end
-           && last_sym) {
+           && last_node && node->ch == key[last_sym]) {
         free(node);
+        last_node--;
         last_sym--;
-        node = key_trace[last_sym];
-        switch (indicators[last_sym + 1]) {
+        node = key_trace[last_node];
+        switch (indicators[last_node + 1]) {
         case EQ:
             node->eqkid = NULL;
             break;
@@ -192,7 +221,89 @@ tst* tst_delete(tst* tree, char* key)
             break;
         }
     }
-    if (node->end || last_sym) {
+    if (node->ch == key[last_sym] && last_node && !node->eqkid) {
+        switch (indicators[last_node]) {
+        case LO:
+            if (node->hikid) {
+                key_trace[last_node - 1]->lokid = node->hikid;
+                tst* lo_node = NULL;
+                if (node->lokid)
+                    lo_node = node->lokid;
+                else {
+                    free(node);
+                    return tree;
+                }
+                tst* hi_node = node->hikid;
+                while (hi_node->lokid)
+                    hi_node = hi_node->lokid;
+                hi_node->lokid = lo_node;
+                free(node);
+                return tree;
+            }
+            if (node->lokid) {
+                key_trace[last_node - 1]->lokid = node->lokid;
+                free(node);
+                return tree;
+            }
+            key_trace[last_node - 1]->lokid = NULL;
+            free(node);
+            return tree;
+            break;
+        case HI:
+            if (node->hikid) {
+                key_trace[last_node - 1]->hikid = node->hikid;
+                tst* lo_node = NULL;
+                if (node->lokid)
+                    lo_node = node->lokid;
+                else {
+                    free(node);
+                    return tree;
+                }
+                tst* hi_node = node->hikid;
+                while (hi_node->lokid)
+                    hi_node = hi_node->lokid;
+                hi_node->lokid = lo_node;
+                free(node);
+                return tree;
+            }
+            if (node->lokid) {
+                key_trace[last_node - 1]->hikid = node->lokid;
+                free(node);
+                return tree;
+            }
+            key_trace[last_node - 1]->hikid = NULL;
+            free(node);
+            return tree;
+            break;
+        case EQ:
+            if (node->hikid) {
+                key_trace[last_node - 1]->eqkid = node->hikid;
+                tst* lo_node = NULL;
+                if (node->lokid)
+                    lo_node = node->lokid;
+                else {
+                    free(node);
+                    return tree;
+                }
+                tst* hi_node = node->hikid;
+                while (hi_node->lokid)
+                    hi_node = hi_node->lokid;
+                hi_node->lokid = lo_node;
+                free(node);
+                return tree;
+            }
+            if (node->lokid) {
+                key_trace[last_node - 1]->eqkid = node->lokid;
+                free(node);
+                return tree;
+            }
+            key_trace[last_node - 1]->hikid = NULL;
+            free(node);
+            return tree;
+            break;
+        }
+    }
+    if (node->end || last_node || node->ch != key[last_sym]) {
         if (node->hikid) {
             node->eqkid = node->hikid;
             node->hikid = NULL;
@@ -314,6 +425,9 @@ void tst_print_all_words(tst* tree)
             printf("%s\n", word);
         if (tree->eqkid)
             tst_print_words_from_start(tree->eqkid, word, EQ);
+    } else {
+        printf("Here is no tree\n");
+        return;
     }
     if (tree->lokid)
         tst_print_all_words(tree->lokid);
