@@ -186,18 +186,6 @@ tst* tst_delete(tst* tree, char* key)
             indicator = EQ;
             continue;
         }
-        // if (node->hikid)
-        //     if (key[i + 1] == node->hikid->ch) {
-        //         node = node->hikid;
-        //         indicator = HI;
-        //         continue;
-        //     }
-        // if (node->lokid)
-        //     if (key[i + 1] == node->lokid->ch) {
-        //         node = node->lokid;
-        //         indicator = LO;
-        //         continue;
-        //     }
         return tree;
     }
     int last_node = i;
@@ -298,10 +286,22 @@ tst* tst_delete(tst* tree, char* key)
                 return tree;
             }
             key_trace[last_node - 1]->hikid = NULL;
-            free(node);
+            if (!node->end)
+                free(node);
             return tree;
             break;
         }
+    }
+    if (node->ch != key[last_sym] && node->eqkid) {
+        switch (indicators[last_node + 1]) {
+        case HI:
+            node->hikid = NULL;
+            break;
+        case LO:
+            node->lokid = NULL;
+            break;
+        }
+        return tree;
     }
     if (node->end || last_node || node->ch != key[last_sym]) {
         if (node->hikid) {
@@ -445,4 +445,17 @@ void tst_print_one_word(tst* node)
     }
     printf("%c", node->ch);
     printf("\n");
+}
+
+void tst_delete_tree(tst* tree)
+{
+    if(tree == NULL)
+        return;
+    if(tree->eqkid)
+        tst_delete_tree(tree->eqkid);
+    if(tree->lokid)
+        tst_delete_tree(tree->lokid);
+    if(tree->hikid)
+        tst_delete_tree(tree->hikid);
+    free(tree);
 }

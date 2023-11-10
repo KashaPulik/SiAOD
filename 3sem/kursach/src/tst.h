@@ -21,3 +21,4 @@ tst* tst_insert(tst* tree, char* key);
 tst* tst_delete(tst* tree, char* key);
 void tst_print_one_word(tst* node);
 void tst_print_all_words(tst* tree);
+void tst_delete_tree(tst* tree);
