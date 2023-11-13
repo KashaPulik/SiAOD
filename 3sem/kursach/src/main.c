@@ -1,7 +1,7 @@
 #include "tst.h"
 #include <stdio.h>
 
-int n_words = 1000;
+int n_words = 1000000;
 
 int main()
 {
@@ -16,7 +16,8 @@ int main()
         tree = tst_insert(tree, strings[i]);
     }
 
-    for (int i = n_words; i > 0; i--) {
+    for (int i = 1; i <= n_words; i++) {
         tree = tst_delete(tree, strings[i]);
     }
+    tst_print_all_words(tree);
 }
