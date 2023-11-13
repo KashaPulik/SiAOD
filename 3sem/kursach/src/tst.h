@@ -13,8 +13,7 @@ typedef struct tst {
     bool end;
 } tst;
 
-extern int max_dict_size;
-extern int max_word_len;
+extern int max_deep;
 
 tst* create_node(char ch);
 tst* tst_insert(tst* tree, char* key);

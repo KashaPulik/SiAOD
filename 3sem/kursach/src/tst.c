@@ -1,7 +1,6 @@
 #include "tst.h"
 
-int max_dict_size = 1000;
-int max_word_len = 64;
+int max_deep = 64;
 
 tst* create_node(char ch)
 {
@@ -110,86 +109,113 @@ tst* find_next_sym(tst* node, char key)
     return NULL;
 }
 
-tst* tst_delete(tst* tree, char* key)
+tst* start_of_key(tst* node, char first_sym, tst** prev, int* indicator)
 {
-    if (tree == NULL)
-        return NULL;
-    tst *node = tree, *prev = NULL;
-    int indicator = NONE;
-    while (node->ch != *key) {
-        if (*key > node->ch) {
+    while (node->ch != first_sym) {
+        if (first_sym > node->ch) {
             if (node->hikid) {
-                indicator = HI;
-                prev = node;
+                *indicator = HI;
+                *prev = node;
                 node = node->hikid;
             } else {
-                return tree;
+                return NULL;
             }
-        } else if (*key < node->ch) {
+        }
+        if (first_sym < node->ch) {
             if (node->lokid) {
-                indicator = LO;
-                prev = node;
+                *indicator = LO;
+                *prev = node;
                 node = node->lokid;
             } else {
-                return tree;
+                return NULL;
             }
         }
     }
-    tst* key_trace[max_word_len];
-    int indicators[max_word_len];
+    return node;
+}
+
+tst* end_of_key(tst* node, tst** key_nodes, int* indicators, char* key)
+{
+    int indicator = indicators[0];
     bool key_is_part = 1;
     int n_symbol = 0;
-    int i;
-    for (i = 0; i < max_word_len; i++) {
-        key_trace[i] = node;
+
+    for (int i = 0; i < max_deep; i++) {
+        key_nodes[i] = node;
         indicators[i] = indicator;
         key_is_part = node->ch == key[n_symbol] ? 1 : 0;
         if (key_is_part)
             n_symbol++;
-        else {
-            while (!key_is_part) {
-                if (key[n_symbol] > node->ch) {
-                    if (node->hikid) {
-                        node = node->hikid;
-                        indicator = HI;
-                        i++;
-                        key_trace[i] = node;
-                        indicators[i] = indicator;
-                        continue;
-                    } else {
-                        return tree;
-                    }
-                } else if (key[n_symbol] < node->ch) {
-                    if (node->lokid) {
-                        node = node->lokid;
-                        indicator = LO;
-                        i++;
-                        key_trace[i] = node;
-                        indicators[i] = indicator;
-                        continue;
-                    } else {
-                        return tree;
-                    }
+        while (!key_is_part) {
+            if (key[n_symbol] > node->ch) {
+                if (node->hikid) {
+                    node = node->hikid;
+                    indicator = HI;
+                    i++;
+                    key_nodes[i] = node;
+                    indicators[i] = indicator;
+                } else {
+                    return NULL;
                 }
+            } else if (key[n_symbol] < node->ch) {
+                if (node->lokid) {
+                    node = node->lokid;
+                    indicator = LO;
+                    i++;
+                    key_nodes[i] = node;
+                    indicators[i] = indicator;
+                } else {
+                    return NULL;
+                }
+            } else {
                 n_symbol++;
                 key_is_part = true;
             }
         }
         if (key[n_symbol] == '\0') {
             if (node->end)
-                break;
+                return node;
             else
-                return tree;
+                return NULL;
         }
         if (node->eqkid) {
             node = node->eqkid;
             indicator = EQ;
-            continue;
+        } else {
+            return NULL;
         }
-        return tree;
     }
-    int last_node = i;
-    int last_sym = n_symbol - 1;
+    return node;
+}
+
+tst* tst_delete(tst* tree, char* key)
+{
+    if (tree == NULL)
+        return NULL;
+    tst* prev = NULL;
+    int indicator = NONE;
+    tst* node = start_of_key(tree, *key, &prev, &indicator);
+    if (node == NULL)
+        return tree;
+
+    tst* key_trace[max_deep];
+    int indicators[max_deep];
+    for (int i = 0; i < max_deep; i++) {
+        key_trace[i] = NULL;
+        indicators[i] = NONE;
+    }
+    indicators[0] = indicator;
+
+    node = end_of_key(node, key_trace, indicators, key);
+
+    if (node == NULL)
+        return tree;
+
+    int last_sym = strlen(key) - 1;
+    int last_node = 0;
+    while (key_trace[last_node + 1] != NULL)
+        last_node++;
+
     node->end = false;
     while (!node->eqkid && !node->hikid && !node->lokid && !node->end
            && last_node && node->ch == key[last_sym]) {
@@ -398,7 +424,7 @@ tst* tst_delete(tst* tree, char* key)
 
 void tst_print_words_from_start(tst* node, char* word, int indicator)
 {
-    char word_copy[max_word_len];
+    char word_copy[max_deep];
     strcpy(word_copy, word);
     if (indicator == LO || indicator == HI)
         word_copy[strlen(word_copy) - 1] = '\0';
@@ -417,7 +443,7 @@ void tst_print_words_from_start(tst* node, char* word, int indicator)
 void tst_print_all_words(tst* tree)
 {
     if (tree) {
-        char word[max_word_len];
+        char word[max_deep];
         word[0] = '\0';
         char symbol[2] = {tree->ch, '\0'};
         strcat(word, symbol);
@@ -449,13 +475,13 @@ void tst_print_one_word(tst* node)
 
 void tst_delete_tree(tst* tree)
 {
-    if(tree == NULL)
+    if (tree == NULL)
         return;
-    if(tree->eqkid)
+    if (tree->eqkid)
         tst_delete_tree(tree->eqkid);
-    if(tree->lokid)
+    if (tree->lokid)
         tst_delete_tree(tree->lokid);
-    if(tree->hikid)
+    if (tree->hikid)
         tst_delete_tree(tree->hikid);
     free(tree);
 }

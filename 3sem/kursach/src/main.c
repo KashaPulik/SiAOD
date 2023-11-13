@@ -19,13 +19,4 @@ int main()
     for (int i = n_words; i > 0; i--) {
         tree = tst_delete(tree, strings[i]);
     }
-
-    // for (int i = 1; i <= n_words; i++) {
-    //     tree = tst_delete(tree, strings[i]);
-    // }
-
-    if (tree == NULL)
-        printf("yey\n");
-    else
-        tst_print_all_words(tree);
 }
