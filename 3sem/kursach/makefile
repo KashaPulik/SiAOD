@@ -38,3 +38,9 @@ clean:
 	rm -rf $(APP_OBJECTS)
 	rm -rf $(DEPS)
 	rm -rf $(APP_PATH)
+
+.PHONY: graphic
+graphic:
+	python3 graphic1.py
+	python3 graphic2.py
+	python3 graphic3.py

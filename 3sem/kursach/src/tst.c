@@ -448,3 +448,55 @@ void tst_delete_tree(tst* tree)
         tst_delete_tree(tree->hikid);
     free(tree);
 }
+
+tst* tst_find_sym(tst* node, char symbol)
+{
+    if (node == NULL)
+        return NULL;
+    while (symbol != node->ch) {
+        if (symbol < node->ch) {
+            if (node->lokid) {
+                node = node->lokid;
+                continue;
+            } else {
+                return NULL;
+            }
+        }
+        if (symbol > node->ch) {
+            if (node->hikid) {
+                node = node->hikid;
+                continue;
+            } else {
+                return NULL;
+            }
+        }
+    }
+    return node;
+}
+
+bool tst_lookup(tst* tree, char* key)
+{
+    if (tree == NULL)
+        return false;
+    tree = tst_find_sym(tree, *key);
+    if (tree == NULL)
+        return false;
+    key++;
+    while (*key != '\0') {
+        if (tree->eqkid) {
+            if (tree->eqkid->ch == *key) {
+                tree = tree->eqkid;
+                key++;
+                continue;
+            }
+            tree = tree->eqkid;
+        } else {
+            return false;
+        }
+        tree = tst_find_sym(tree, *key);
+        if (tree == NULL)
+            return false;
+        key++;
+    }
+    return tree->end;
+}

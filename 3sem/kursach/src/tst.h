@@ -21,3 +21,4 @@ tst* tst_delete(tst* tree, char* key);
 void tst_print_one_word(tst* node);
 void tst_print_all_words(tst* tree);
 void tst_delete_tree(tst* tree);
+bool tst_lookup(tst* tree, char* key);
