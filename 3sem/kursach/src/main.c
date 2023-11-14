@@ -21,7 +21,85 @@ void prefix_search_experiment();
 
 int main()
 {
-    prefix_search_experiment();
+    char input = 0;
+    tst* tree = NULL;
+    char string[128];
+    while (input != '0') {
+        printf("It's my super program to demonstrate ternary search tree\n");
+        printf("Choose option or press 0 to exit\n");
+        printf("(Press 'Enter' for the second time after every operation)\n");
+        printf("Option list:\n");
+        printf("1. Create new tree (your old tree will be deleted)\n");
+        printf("2. Insert key to your tree\n");
+        printf("3. Print all inserted keys\n");
+        printf("4. Delete key\n");
+        printf("5. Load keys to tree from file\n");
+        printf("6. Make prefix search\n");
+        printf("7. Update experimental data\n");
+        input = getchar();
+        while (getchar() != '\n')
+            ;
+        switch (input) {
+        case '0':
+            tst_delete_tree(tree);
+            break;
+        case '1':
+            tst_delete_tree(tree);
+            tree = NULL;
+            break;
+        case '2':
+            printf("Enter key: ");
+            fgets(string, 100, stdin);
+            string[strlen(string) - 1] = '\0';
+            tree = tst_insert(tree, string);
+            getchar();
+            break;
+        case '3':
+            tst_print_all_words(tree);
+            getchar();
+            break;
+        case '4':
+            printf("Enter key: ");
+            fgets(string, 100, stdin);
+            string[strlen(string) - 1] = '\0';
+            tree = tst_delete(tree, string);
+            getchar();
+            break;
+        case '5':
+            printf("Enter filename: ");
+            fgets(string, 100, stdin);
+            string[strlen(string) - 1] = '\0';
+            FILE* file = fopen(string, "r");
+            if (file == NULL) {
+                printf("Can't open file :(\n");
+                getchar();
+                break;
+            }
+            char key[128];
+            int i = 0;
+            while (fscanf(file, "%s", key) != EOF) {
+                tree = tst_insert(tree, key);
+                i++;
+            }
+            fclose(file);
+            printf("%d keys were added to the tree\n", i);
+            getchar();
+            break;
+        case '6':
+            printf("Enter the prefix: ");
+            fgets(string, 100, stdin);
+            string[strlen(string) - 1] = '\0';
+            tst_prefix_search(tree, string);
+            getchar();
+            break;
+        case '7':
+            insertion_time_experiment();
+            deleting_time_experiment();
+            lookup_time_experiment();
+            printf("Data has been updated\n\n");
+            break;
+        }
+    }
 }
 
 void insertion_time_experiment()

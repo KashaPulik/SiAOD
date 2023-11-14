@@ -491,10 +491,10 @@ bool tst_lookup(tst* tree, char* key)
 
 void tst_print_all_words_with_prefix(tst* node, char* prefix)
 {
-    if (!node) {
-        printf("Here is no tree\n");
-        return;
-    }
+    // if (!node) {
+    //     printf("Here is no tree\n");
+    //     return;
+    // }
     char word[max_deep];
     word[0] = '\0';
     strcat(word, prefix);
@@ -508,11 +508,15 @@ void tst_prefix_search(tst* tree, char* prefix)
 {
     char prefix_copy[max_deep];
     strcpy(prefix_copy, prefix);
-    if (tree == NULL)
+    if (tree == NULL) {
+        printf("Here is no keys\n");
         return;
+    }
     tree = tst_find_sym(tree, *prefix);
-    if (tree == NULL)
+    if (tree == NULL) {
+        printf("Here is no keys with prefix '%s'\n", prefix);
         return;
+    }
     prefix++;
     while (*prefix != '\0') {
         if (tree->eqkid) {
@@ -523,11 +527,14 @@ void tst_prefix_search(tst* tree, char* prefix)
             }
             tree = tree->eqkid;
         } else {
+            printf("Here is no keys with prefix '%s'\n", prefix);
             return;
         }
         tree = tst_find_sym(tree, *prefix);
-        if (tree == NULL)
+        if (tree == NULL) {
+            printf("Here is no keys with prefix '%s'\n", prefix);
             return;
+        }
         prefix++;
     }
     tst_print_all_words_with_prefix(tree, prefix_copy);
