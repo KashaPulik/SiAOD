@@ -385,7 +385,7 @@ tst* tst_delete(tst* tree, char* key)
     return tree;
 }
 
-void tst_print_words_from_start(tst* node, char* word, int indicator)
+void tst_print_words_from_node(tst* node, char* word, int indicator)
 {
     char word_copy[max_deep];
     strcpy(word_copy, word);
@@ -396,11 +396,11 @@ void tst_print_words_from_start(tst* node, char* word, int indicator)
     if (node->end)
         printf("%s\n", word_copy);
     if (node->eqkid)
-        tst_print_words_from_start(node->eqkid, word_copy, EQ);
+        tst_print_words_from_node(node->eqkid, word_copy, EQ);
     if (node->lokid)
-        tst_print_words_from_start(node->lokid, word_copy, LO);
+        tst_print_words_from_node(node->lokid, word_copy, LO);
     if (node->hikid)
-        tst_print_words_from_start(node->hikid, word_copy, HI);
+        tst_print_words_from_node(node->hikid, word_copy, HI);
 }
 
 void tst_print_all_words(tst* tree)
@@ -413,7 +413,7 @@ void tst_print_all_words(tst* tree)
         if (tree->end)
             printf("%s\n", word);
         if (tree->eqkid)
-            tst_print_words_from_start(tree->eqkid, word, EQ);
+            tst_print_words_from_node(tree->eqkid, word, EQ);
     } else {
         printf("Here is no tree\n");
         return;
@@ -422,18 +422,6 @@ void tst_print_all_words(tst* tree)
         tst_print_all_words(tree->lokid);
     if (tree->hikid)
         tst_print_all_words(tree->hikid);
-}
-
-void tst_print_one_word(tst* node)
-{
-    while (node != NULL) {
-        printf("%c", node->ch);
-        node = node->eqkid;
-        if (node == NULL)
-            break;
-    }
-    printf("%c", node->ch);
-    printf("\n");
 }
 
 void tst_delete_tree(tst* tree)
@@ -499,4 +487,48 @@ bool tst_lookup(tst* tree, char* key)
         key++;
     }
     return tree->end;
+}
+
+void tst_print_all_words_with_prefix(tst* node, char* prefix)
+{
+    if (!node) {
+        printf("Here is no tree\n");
+        return;
+    }
+    char word[max_deep];
+    word[0] = '\0';
+    strcat(word, prefix);
+    if (node->end)
+        printf("%s\n", word);
+    if (node->eqkid)
+        tst_print_words_from_node(node->eqkid, word, EQ);
+}
+
+void tst_prefix_search(tst* tree, char* prefix)
+{
+    char prefix_copy[max_deep];
+    strcpy(prefix_copy, prefix);
+    if (tree == NULL)
+        return;
+    tree = tst_find_sym(tree, *prefix);
+    if (tree == NULL)
+        return;
+    prefix++;
+    while (*prefix != '\0') {
+        if (tree->eqkid) {
+            if (tree->eqkid->ch == *prefix) {
+                tree = tree->eqkid;
+                prefix++;
+                continue;
+            }
+            tree = tree->eqkid;
+        } else {
+            return;
+        }
+        tree = tst_find_sym(tree, *prefix);
+        if (tree == NULL)
+            return;
+        prefix++;
+    }
+    tst_print_all_words_with_prefix(tree, prefix_copy);
 }

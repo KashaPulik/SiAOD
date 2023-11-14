@@ -17,16 +17,11 @@ int n_iterations = 1000000;
 void insertion_time_experiment();
 void deleting_time_experiment();
 void lookup_time_experiment();
+void prefix_search_experiment();
 
 int main()
 {
-    srand(time(0));
-
-    insertion_time_experiment();
-
-    deleting_time_experiment();
-
-    lookup_time_experiment();
+    prefix_search_experiment();
 }
 
 void insertion_time_experiment()
@@ -127,5 +122,34 @@ void lookup_time_experiment()
     free(strings);
     fclose(dict);
     fclose(data);
+    tst_delete_tree(tree);
+}
+
+void prefix_search_experiment()
+{
+    tst* tree = NULL;
+    char** strings = malloc(sizeof(char*) * (n_words + 1));
+    FILE* dict = fopen("aboba.txt", "r");
+
+    for (int i = 1; i <= n_words; i++) {
+        strings[i] = malloc(11);
+        fscanf(dict, "%s", strings[i]);
+    }
+    for (int i = 1; i <= n_words; i++)
+        tree = tst_insert(tree, strings[i]);
+
+    char slovo[11];
+    printf("Enter prefix: ");
+    while (scanf("%s", slovo)) {
+        printf("\n");
+        tst_prefix_search(tree, slovo);
+        printf("\n");
+        printf("Enter prefix: ");
+    }
+
+    for (int i = 1; i <= n_words; i++)
+        free(strings[i]);
+    free(strings);
+    fclose(dict);
     tst_delete_tree(tree);
 }
