@@ -1,11 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv("./data/data1.txt")
+data = pd.read_csv("./data/insertion_time.txt")
 
 plt.plot(data['t'], data['n'], color='b', label='Время добавления')
-plt.xlabel('t')
-plt.ylabel('n')
+plt.xlabel('Время от начала добавления')
+plt.ylabel('Количество добавленных ключей')
 plt.title('ABOBA')
 plt.legend()
 plt.grid(True)

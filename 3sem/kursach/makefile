@@ -32,6 +32,9 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 .PHONY: run
 run: all
 	./bin/app
+	python3 graphic1.py
+	python3 graphic2.py
+	python3 graphic3.py
 
 .PHONY: clean
 clean:
