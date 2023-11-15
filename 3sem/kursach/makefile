@@ -32,18 +32,17 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.$(SRC_EXT)
 .PHONY: run
 run: all
 	./bin/app
-	python3 graphic1.py
-	python3 graphic2.py
-	python3 graphic3.py
 
 .PHONY: clean
 clean:
 	rm -rf $(APP_OBJECTS)
 	rm -rf $(DEPS)
 	rm -rf $(APP_PATH)
+	rm -rf ./graphic/*.png
+	rm -rf ./experimental_data/*.txt
 
 .PHONY: graphic
 graphic:
-	python3 graphic1.py
-	python3 graphic2.py
-	python3 graphic3.py
+	python3 ./python_script/graphic1.py
+	python3 ./python_script/graphic2.py
+	python3 ./python_script/graphic3.py

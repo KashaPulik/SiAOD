@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv("./data/lookup_time.txt")
+data = pd.read_csv("./experimental_data/lookup_time.txt")
 
 plt.plot(data['n'], data['t'], color='b', label='Время поиска')
 plt.xlabel('Количество ключей')

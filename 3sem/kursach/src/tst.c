@@ -491,10 +491,6 @@ bool tst_lookup(tst* tree, char* key)
 
 void tst_print_all_words_with_prefix(tst* node, char* prefix)
 {
-    // if (!node) {
-    //     printf("Here is no tree\n");
-    //     return;
-    // }
     char word[max_deep];
     word[0] = '\0';
     strcat(word, prefix);

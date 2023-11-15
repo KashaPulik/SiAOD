@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv("./data/deleting_time.txt")
+data = pd.read_csv("./experimental_data/deleting_time.txt")
 
 plt.plot(data['t'], data['n'], color='b', label='Время удаления')
 plt.xlabel('Время от начала удаления')
