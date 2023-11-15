@@ -46,6 +46,8 @@ tst* tst_insert(tst* tree, char* key)
             prev = node;
             node = node->eqkid;
             key++;
+            if(*key == '\0')
+                prev->end = true;
         }
     }
     if (*key == '\0')
