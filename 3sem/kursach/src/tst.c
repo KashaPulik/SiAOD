@@ -46,12 +46,12 @@ tst* tst_insert(tst* tree, char* key)
             prev = node;
             node = node->eqkid;
             key++;
-            if(*key == '\0')
+            if(*key == '\0') {
                 prev->end = true;
+                return tree;
+            }
         }
     }
-    if (*key == '\0')
-        return tree;
     // Под новый узел выделяется память
     node = create_node(*key);
     // Если корня дерева не существует, то новый узел становится корнем
