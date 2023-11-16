@@ -46,7 +46,7 @@ tst* tst_insert(tst* tree, char* key)
             prev = node;
             node = node->eqkid;
             key++;
-            if(*key == '\0') {
+            if (*key == '\0') {
                 prev->end = true;
                 return tree;
             }
@@ -92,23 +92,6 @@ tst* tst_insert(tst* tree, char* key)
     node->end = true;
 
     return tree;
-}
-
-tst* find_next_sym(tst* node, char key)
-{
-    tst* tmp = node;
-    while (tmp->lokid) {
-        tmp = tmp->lokid;
-        if (tmp->ch == key)
-            return tmp;
-    }
-    tmp = node;
-    while (tmp->hikid) {
-        tmp = tmp->hikid;
-        if (tmp->ch == key)
-            return tmp;
-    }
-    return NULL;
 }
 
 tst* start_of_key(tst* node, char first_sym, tst** prev, int* indicator)
@@ -220,86 +203,44 @@ tst* free_key(
     return node;
 }
 
+void tst_restore_prop_any_case(tst* node, tst** child)
+{
+    if (node->hikid) {
+        *child = node->hikid;
+        tst* lo_node = NULL;
+        if (node->lokid)
+            lo_node = node->lokid;
+        else {
+            free(node);
+            return;
+        }
+        tst* hi_node = node->hikid;
+        while (hi_node->lokid)
+            hi_node = hi_node->lokid;
+        hi_node->lokid = lo_node;
+        free(node);
+        return;
+    }
+    if (node->lokid) {
+        *child = node->lokid;
+        free(node);
+        return;
+    }
+    *child = NULL;
+    free(node);
+}
+
 void tst_restore_prop(int indicator, tst* node, tst* prev)
 {
     switch (indicator) {
     case LO:
-        if (node->hikid) {
-            prev->lokid = node->hikid;
-            tst* lo_node = NULL;
-            if (node->lokid)
-                lo_node = node->lokid;
-            else {
-                free(node);
-                return;
-            }
-            tst* hi_node = node->hikid;
-            while (hi_node->lokid)
-                hi_node = hi_node->lokid;
-            hi_node->lokid = lo_node;
-            free(node);
-            return;
-        }
-        if (node->lokid) {
-            prev->lokid = node->lokid;
-            free(node);
-            return;
-        }
-        prev->lokid = NULL;
-        free(node);
-        return;
+        tst_restore_prop_any_case(node, &(prev->lokid));
         break;
     case HI:
-        if (node->hikid) {
-            prev->hikid = node->hikid;
-            tst* lo_node = NULL;
-            if (node->lokid)
-                lo_node = node->lokid;
-            else {
-                free(node);
-                return;
-            }
-            tst* hi_node = node->hikid;
-            while (hi_node->lokid)
-                hi_node = hi_node->lokid;
-            hi_node->lokid = lo_node;
-            free(node);
-            return;
-        }
-        if (node->lokid) {
-            prev->hikid = node->lokid;
-            free(node);
-            return;
-        }
-        prev->hikid = NULL;
-        free(node);
-        return;
+        tst_restore_prop_any_case(node, &(prev->hikid));
         break;
     case EQ:
-        if (node->hikid) {
-            prev->eqkid = node->hikid;
-            tst* lo_node = NULL;
-            if (node->lokid)
-                lo_node = node->lokid;
-            else {
-                free(node);
-                return;
-            }
-            tst* hi_node = node->hikid;
-            while (hi_node->lokid)
-                hi_node = hi_node->lokid;
-            hi_node->lokid = lo_node;
-            free(node);
-            return;
-        }
-        if (node->lokid) {
-            prev->eqkid = node->lokid;
-            free(node);
-            return;
-        }
-        prev->eqkid = NULL;
-        free(node);
-        return;
+        tst_restore_prop_any_case(node, &(prev->eqkid));
         break;
     }
 }
@@ -371,18 +312,19 @@ tst* tst_delete(tst* tree, char* key)
     if (node->eqkid)
         return tree;
 
-    if (prev == NULL && !last_node && !node->end)
-        return tst_root_restore_prop(tree, node);
+    if (prev == NULL && !last_node && !node->end) {
+        tst_restore_prop_any_case(node, &tree);
+        return tree;
+    }
 
     if (node->end && !node->hikid && !node->lokid)
         return tree;
 
-    if (node->ch == key[last_sym] && last_node) {
+    if (last_node)
+        // if (node->ch == key[last_sym] && last_node) {
         tst_restore_prop(indicators[last_node], node, key_trace[last_node - 1]);
-        return tree;
-    }
-
-    tst_restore_prop(indicators[0], node, prev);
+    else
+        tst_restore_prop(indicators[0], node, prev);
 
     return tree;
 }
@@ -512,7 +454,7 @@ void tst_prefix_search(tst* tree, char* prefix)
     }
     tree = tst_find_sym(tree, *prefix);
     if (tree == NULL) {
-        printf("Here is no keys with prefix '%s'\n", prefix);
+        printf("Here is no keys with prefix '%s'\n", prefix_copy);
         return;
     }
     prefix++;
@@ -525,12 +467,12 @@ void tst_prefix_search(tst* tree, char* prefix)
             }
             tree = tree->eqkid;
         } else {
-            printf("Here is no keys with prefix '%s'\n", prefix);
+            printf("Here is no keys with prefix '%s'\n", prefix_copy);
             return;
         }
         tree = tst_find_sym(tree, *prefix);
         if (tree == NULL) {
-            printf("Here is no keys with prefix '%s'\n", prefix);
+            printf("Here is no keys with prefix '%s'\n", prefix_copy);
             return;
         }
         prefix++;

@@ -1,8 +1,9 @@
-#include "tst.h"
 #include "experimental_funcs.h"
+#include "tst.h"
 
 int main()
 {
+    test();
     srand(time(0));
     char input = 0;
     tst* tree = NULL;
@@ -21,7 +22,8 @@ int main()
         printf("6. Make prefix search\n");
         printf("7. Update experimental data\n");
         input = getchar();
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
         switch (input) {
         case '0':
             tst_delete_tree(tree);
@@ -39,7 +41,9 @@ int main()
             string[strlen(string) - 1] = '\0';
             time = wtime();
             tree = tst_insert(tree, string);
-            printf("Key '%s' was added in %.7lf seconds\n", string, wtime() - time);
+            printf("Key '%s' was added in %.7lf seconds\n",
+                   string,
+                   wtime() - time);
             getchar();
             break;
         case '3':
@@ -54,7 +58,9 @@ int main()
             string[strlen(string) - 1] = '\0';
             time = wtime();
             tree = tst_delete(tree, string);
-            printf("Key '%s' was deleted in %.7lf seconds\n", string, wtime() - time);
+            printf("Key '%s' was deleted in %.7lf seconds\n",
+                   string,
+                   wtime() - time);
             getchar();
             break;
         case '5':
@@ -74,7 +80,9 @@ int main()
                 tree = tst_insert(tree, key);
                 i++;
             }
-            printf("%d keys were added to the tree in %.7lf seconds\n", i, wtime() - time);
+            printf("%d keys were added to the tree in %.7lf seconds\n",
+                   i,
+                   wtime() - time);
             fclose(file);
             getchar();
             break;
@@ -89,9 +97,12 @@ int main()
             break;
         case '7':
             time = wtime();
-            insertion_time_experiment();
-            deleting_time_experiment();
-            lookup_time_experiment();
+            random_insertion_time_experiment();
+            sorted_insertion_time_experiment();
+            deleting_from_last_time_experiment();
+            deleting_from_first_time_experiment();
+            last_lookup_time_experiment();
+            random_lookup_time_experiment();
             printf("Data has been updated in %f seconds\n\n", wtime() - time);
             getchar();
             break;

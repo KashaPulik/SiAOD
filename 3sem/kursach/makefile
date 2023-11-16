@@ -43,6 +43,10 @@ clean:
 
 .PHONY: graphic
 graphic:
-	python3 ./python_script/graphic1.py
-	python3 ./python_script/graphic2.py
-	python3 ./python_script/graphic3.py
+	python3 python_script/random_insertion_time.py
+	python3 python_script/sorted_insertion_time.py
+	python3 python_script/deleting_from_first_time.py
+	python3 python_script/deleting_from_last_time.py
+	python3 python_script/last_lookup_time.py
+	python3 python_script/random_lookup_time.py
+	
