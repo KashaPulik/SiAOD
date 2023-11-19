@@ -86,8 +86,6 @@ void deleting_from_last_time_experiment()
         }
     }
 
-    tst_print_all_words(tree);
-
     for (int i = 1; i <= n_words; i++)
         free(strings[i]);
     free(strings);
@@ -153,10 +151,10 @@ void random_lookup_time_experiment()
                     "%d,%.10lf\n",
                     i,
                     (wtime() - start_time) / n_iterations);
-            fprintf(stdout,
-                    "%d,%.10lf\n",
-                    i,
-                    (wtime() - start_time) / n_iterations);
+            // fprintf(stdout,
+            //         "%d,%.10lf\n",
+            //         i,
+            //         (wtime() - start_time) / n_iterations);
         }
     }
 
@@ -194,10 +192,10 @@ void last_lookup_time_experiment()
                     "%d,%.10lf\n",
                     i,
                     (wtime() - start_time) / n_iterations);
-            fprintf(stdout,
-                    "%d,%.10lf\n",
-                    i,
-                    (wtime() - start_time) / n_iterations);
+            // fprintf(stdout,
+            //         "%d,%.10lf\n",
+            //         i,
+            //         (wtime() - start_time) / n_iterations);
         }
     }
 
