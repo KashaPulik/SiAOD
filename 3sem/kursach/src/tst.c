@@ -379,17 +379,6 @@ bool tst_lookup(tst* tree, char* key)
     return tree->end;
 }
 
-void tst_print_all_words_with_prefix(tst* node, char* prefix)
-{
-    char word[max_deep];
-    word[0] = '\0';
-    strcat(word, prefix);
-    if (node->end)
-        printf("%s\n", word);
-    if (node->eqkid)
-        tst_print_words_from_node(node->eqkid, word, EQ);
-}
-
 void tst_prefix_search(tst* tree, char* prefix)
 {
     if (tree == NULL) {
@@ -423,7 +412,6 @@ void tst_prefix_search(tst* tree, char* prefix)
         }
         prefix++;
     }
-    // tst_print_all_words_with_prefix(tree, prefix_copy);
     if(tree->end)
         printf("%s\n", prefix_copy);
     if(tree->eqkid)
