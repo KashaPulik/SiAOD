@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 
 data = pd.read_csv("./experimental_data/deleting_from_last_time_random.txt")
 
-plt.plot(data['t'], data['n'], color='b', label='Время удаления')
-plt.xlabel('Время от начала удаления')
-plt.ylabel('Количество оставшихся ключей')
-plt.title('Удаление с последнего добаленного ключа после случайного добавления')
+plt.plot(data['n'], data['t'], color='b', label='Время удаления')
+plt.xlabel('Количество ключей')
+plt.ylabel('Время удаления всех ключей')
+plt.title('Удаление из неупорядоченного дерева')
 plt.legend()
 plt.grid(True)
 

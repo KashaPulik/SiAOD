@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 
 data = pd.read_csv("./experimental_data/random_insertion_time.txt")
 
-plt.plot(data['t'], data['n'], color='b', label='Время добавления')
-plt.xlabel('Время от начала добавления')
-plt.ylabel('Количество добавленных ключей')
+plt.plot(data['n'], data['t'], color='b', label='Время добавления')
+plt.xlabel('Количество добавленных ключей')
+plt.ylabel('Время добавления')
 plt.title('Время добавления ключей в случайном порядке')
 plt.legend()
 plt.grid(True)

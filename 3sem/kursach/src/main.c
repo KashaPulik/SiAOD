@@ -3,7 +3,6 @@
 
 int main()
 {
-    test();
     srand(time(0));
     char input = 0;
     tst* tree = NULL;
@@ -97,21 +96,12 @@ int main()
             break;
         case '7':
             time = wtime();
-            random_insertion_time_experiment();
-            printf("1\n");
-            sorted_insertion_time_experiment();
-            printf("2\n");
-            random_insertion_time_experiment_second();
-            printf("3\n");
-            sorted_insertion_time_experiment_second();
-            printf("4\n");
             deleting_from_last_time_random_experiment();
-            printf("5\n");
             deleting_from_last_time_sorted_experiment();
-            printf("6\n");
-            deleting_from_first_time_experiment();
-            // last_lookup_time_experiment();
-            // random_lookup_time_experiment();
+            random_insertion_time_experiment();
+            sorted_insertion_time_experiment();
+            random_lookup_time_random_experiment();
+            random_lookup_time_sorted_experiment();
             printf("Data has been updated in %f seconds\n\n", wtime() - time);
             getchar();
             break;
