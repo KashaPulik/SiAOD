@@ -102,6 +102,8 @@ int main()
             sorted_insertion_time_experiment();
             random_lookup_time_random_experiment();
             random_lookup_time_sorted_experiment();
+            last_lookup_time_random_experiment();
+            last_lookup_time_sorted_experiment();
             printf("Data has been updated in %f seconds\n\n", wtime() - time);
             getchar();
             break;

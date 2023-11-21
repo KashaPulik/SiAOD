@@ -1,6 +1,6 @@
 #include "tst.h"
 
-int max_deep = 128;
+int max_deep = 1024;
 
 tst* create_node(char ch)
 {
