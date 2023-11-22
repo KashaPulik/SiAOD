@@ -14,7 +14,7 @@ void random_insertion_time_experiment()
     FILE* data = fopen(
             "./experimental_data/random_insertion_time.txt", "w");
     double start_time;
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
         fscanf(dict, "%s", strings[i]);
@@ -23,7 +23,7 @@ void random_insertion_time_experiment()
     for (int i = 1; i <= n_words; i++) {
         tree = tst_insert(tree, strings[i]);
         if (i % tmp_step == 0) {
-            fprintf(data, "%d,%lf\n", i, wtime() - start_time);
+            fprintf(data, "%d,%.15lf\n", i, (wtime() - start_time)/i);
             tmp_step += step;
             i = 1;
             if (tmp_step > n_words)
@@ -50,7 +50,7 @@ void sorted_insertion_time_experiment()
     FILE* data = fopen(
             "./experimental_data/sorted_insertion_time.txt", "w");
     double start_time;
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
         fscanf(dict, "%s", strings[i]);
@@ -59,7 +59,7 @@ void sorted_insertion_time_experiment()
     for (int i = 1; i <= n_words; i++) {
         tree = tst_insert(tree, strings[i]);
         if (i % tmp_step == 0) {
-            fprintf(data, "%d,%lf\n", i, wtime() - start_time);
+            fprintf(data, "%d,%.15lf\n", i, (wtime() - start_time)/i);
             tmp_step += step;
             i = 1;
             if (tmp_step > n_words)
@@ -86,7 +86,7 @@ void deleting_from_last_time_random_experiment()
     FILE* data = fopen(
             "./experimental_data/deleting_from_last_time_random.txt",
             "w");
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
         fscanf(dict, "%s", strings[i]);
@@ -99,7 +99,7 @@ void deleting_from_last_time_random_experiment()
             start_time = wtime();
             for (int j = tmp_step; j > 0; j--)
                 tree = tst_delete(tree, strings[j]);
-            fprintf(data, "%d,%lf\n", i, wtime() - start_time);
+            fprintf(data, "%d,%.15lf\n", i, (wtime() - start_time)/i);
             tmp_step += step;
             i = 1;
             if (tmp_step > n_words)
@@ -123,7 +123,7 @@ void deleting_from_last_time_sorted_experiment()
     FILE* data = fopen(
             "./experimental_data/deleting_from_last_time_sorted.txt",
             "w");
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
         fscanf(dict, "%s", strings[i]);
@@ -136,7 +136,7 @@ void deleting_from_last_time_sorted_experiment()
             start_time = wtime();
             for (int j = tmp_step; j > 0; j--)
                 tree = tst_delete(tree, strings[j]);            
-            fprintf(data, "%d,%lf\n", i, wtime() - start_time);
+            fprintf(data, "%d,%.15lf\n", i, (wtime() - start_time)/i);
             tmp_step += step;
             i = 1;
             if (tmp_step > n_words)
@@ -158,7 +158,7 @@ void random_lookup_time_random_experiment()
     FILE* dict = fopen("./data/aboba.txt", "r");
     FILE* data = fopen("./experimental_data/random_lookup_time_random.txt", "w");
 
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
 
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
@@ -195,7 +195,7 @@ void random_lookup_time_sorted_experiment()
     FILE* dict = fopen("./data/sorted_aboba.txt", "r");
     FILE* data = fopen("./experimental_data/random_lookup_time_sorted.txt", "w");
 
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
 
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
@@ -232,7 +232,7 @@ void last_lookup_time_random_experiment()
     FILE* dict = fopen("./data/aboba.txt", "r");
     FILE* data = fopen("./experimental_data/last_lookup_time_random.txt", "w");
 
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
 
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);
@@ -269,7 +269,7 @@ void last_lookup_time_sorted_experiment()
     FILE* dict = fopen("./data/sorted_aboba.txt", "r");
     FILE* data = fopen("./experimental_data/last_lookup_time_sorted.txt", "w");
 
-    fprintf(data, "n,t\n0,0\n");
+    fprintf(data, "n,t\n");
 
     for (int i = 1; i <= n_words; i++) {
         strings[i] = malloc(11);

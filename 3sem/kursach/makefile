@@ -43,11 +43,9 @@ clean:
 
 .PHONY: graphic
 graphic:
-	python3 python_script/random_lookup_time_sorted.py
-	python3 python_script/random_lookup_time_random.py
-	python3 python_script/last_lookup_time_sorted.py
-	python3 python_script/last_lookup_time_random.py
 	python3	python_script/deleting_from_last_time_random.py
 	python3 python_script/deleting_from_last_time_sorted.py
 	python3 python_script/random_insertion_time.py
 	python3 python_script/sorted_insertion_time.py
+	python3 python_script/random_lookup_time_sorted.py
+	python3 python_script/random_lookup_time_random.py
